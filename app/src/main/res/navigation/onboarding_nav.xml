@@ -42,12 +42,12 @@
             app:destination="@id/signUp_Fragment" />
         <argument
             android:name="email"
-            app:argType="string"
-            app:nullable="true" />
+            android:defaultValue=""
+            app:argType="string" />
         <argument
             android:name="password"
-            app:argType="string"
-            app:nullable="true" />
+            android:defaultValue=""
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/signUp_Fragment"
