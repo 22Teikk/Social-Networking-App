@@ -51,7 +51,7 @@
             android:layout_marginEnd="@dimen/_50sdp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:startIconDrawable="@drawable/baseline_phone_24"
+            app:startIconDrawable="@drawable/baseline_mail_outline_24"
             android:backgroundTint="@color/black"
             app:layout_constraintTop_toTopOf="@id/constraintInput"
             app:layout_constraintStart_toStartOf="parent">

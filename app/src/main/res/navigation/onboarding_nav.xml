@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/splashFragment"
-        android:name="com.example.chatapp.Splash_Fragment"
+        android:name="com.example.chatapp.onboarding.Splash_Fragment"
         android:label="fragment_splash"
         tools:layout="@layout/fragment_splash" >
         <action
@@ -48,6 +48,9 @@
             android:name="password"
             android:defaultValue=""
             app:argType="string" />
+        <action
+            android:id="@+id/action_home_Fragment_to_loginPhone_Fragment"
+            app:destination="@id/loginPhone_Fragment" />
     </fragment>
     <fragment
         android:id="@+id/signUp_Fragment"
@@ -58,4 +61,9 @@
             android:id="@+id/action_signUp_Fragment_to_home_Fragment"
             app:destination="@id/home_Fragment" />
     </fragment>
+    <fragment
+        android:id="@+id/loginPhone_Fragment"
+        android:name="com.example.chatapp.onboarding.screens.LoginPhone_Fragment"
+        android:label="fragment_login_phone_"
+        tools:layout="@layout/fragment_login_phone_" />
 </navigation>

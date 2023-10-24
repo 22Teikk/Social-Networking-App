@@ -1,14 +1,22 @@
 <resources>
     <string name="app_name">ChatApp</string>
 
+    <!--    Facebook Login-->
+    <string name="facebook_app_id">10061c6b856662554bba7d664cdf699f</string>
+    <string name="fb_login_protocol_scheme">6f82a18aeb2b6a42c32b5afa4c34e0f2</string>
+    <string name="facebook_client_token">57acafa8d6d50f073ff5505ce57f14579b5c889bb17976e04c362bec7f610267</string>
 
-    <string name="facebook_app_id">1234</string>
-    <string name="fb_login_protocol_scheme">fb1234</string>
-    <string name="facebook_client_token">56789</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="next">Next</string>
     <string name="log_in_to_chatbox">Log In to Chatbox</string>
+
+
+    <!--    Google Login -->
+    <string name="your_web_client_id">google\n</string>
+    <string name="default_web_client_id">460195891015-8hikikvit053882k20piug1q9i7p8bg8.apps.googleusercontent.com</string>
+    <string name="navigation_drawer_open">open\n</string>
+    <string name="navigation_drawer_close">close</string>
 
 
 </resources>

@@ -1,4 +1,4 @@
-package com.example.chatapp
+package com.example.chatapp.onboarding
 
 import android.content.Context
 import android.os.Bundle
@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
+import com.example.chatapp.R
 
 class Splash_Fragment : Fragment() {
     override fun onCreateView(

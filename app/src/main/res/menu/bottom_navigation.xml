@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:title="Message"
+        android:id="@+id/messageScreen"
+        android:icon="@drawable/baseline_message_24"/>
+    <item android:title="News"
+        android:id="@+id/newsScreen"
+        android:icon="@drawable/baseline_newspaper_24"/>
+    <item android:title="Contacts"
+        android:id="@+id/contactScreen"
+        android:icon="@drawable/baseline_people_24"/>
+</menu>
