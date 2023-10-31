@@ -8,9 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.example.chatapp.R
 import com.example.chatapp.databinding.LoginPhoneBinding
-import com.example.chatapp.home.HomeActivity
+import com.example.chatapp.newsfeed.NewsfeedActivity
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuth
@@ -156,7 +155,7 @@ class LoginPhone_Fragment : Fragment() {
     private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
         auth.signInWithCredential(credential).addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                val intent = Intent(context, HomeActivity::class.java)
+                val intent = Intent(context, NewsfeedActivity::class.java)
                 startActivity(intent)
             } else {
                 if (task.exception is FirebaseAuthInvalidCredentialsException) {

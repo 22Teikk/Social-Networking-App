@@ -8,4 +8,11 @@
     <color name="teal_700">#FF018786</color>
     <color name="white">#FFFFFFFF</color>
     <color name="lavender">#8692f7</color>
+    <color name="colorPrimary">#ffffff</color>
+    <color name="colorPrimaryDark">#e0e0e0</color>
+    <color name="colorAccent">#d81b60</color>
+    <color name="grey">#8b898a</color>
+    <color name="pink">#d23381</color>
+    <color name="transparent">#00FFFFFF</color>
+    <color name="selected_icon">#FE0000</color>
 </resources>

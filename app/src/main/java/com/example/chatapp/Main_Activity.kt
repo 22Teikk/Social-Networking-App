@@ -7,6 +7,7 @@ import android.util.Base64
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.findNavController
 import com.example.chatapp.databinding.ActivityMainBinding
 import com.facebook.FacebookSdk
 import java.security.MessageDigest
@@ -20,4 +21,5 @@ class Main_Activity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
     }
+
 }

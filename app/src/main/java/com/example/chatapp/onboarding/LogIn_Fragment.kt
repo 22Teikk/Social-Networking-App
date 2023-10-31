@@ -12,9 +12,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.example.chatapp.Constant
 import com.example.chatapp.R
 import com.example.chatapp.databinding.FragmentLoginBinding
-import com.example.chatapp.home.HomeActivity
+import com.example.chatapp.newsfeed.NewsfeedActivity
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
@@ -29,6 +30,8 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
 
@@ -36,6 +39,7 @@ class LogIn_Fragment : Fragment() {
     private lateinit var _binding: FragmentLoginBinding
     private val args: LogIn_FragmentArgs by navArgs()
     private lateinit var auth: FirebaseAuth
+    private lateinit var database: DatabaseReference
     private val binding get() = _binding!!
     //For Google login
     private lateinit var client: GoogleSignInClient
@@ -48,6 +52,7 @@ class LogIn_Fragment : Fragment() {
         _binding = FragmentLoginBinding.inflate(layoutInflater, container, false)
         auth = Firebase.auth
         getAccount()
+        database = Firebase.database.reference
         FacebookSdk.sdkInitialize(requireContext());
         //Generate Option Log In Google
         val options = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id))
@@ -90,7 +95,7 @@ class LogIn_Fragment : Fragment() {
     private fun signInWithFacebook() {
         val accessToken = AccessToken.getCurrentAccessToken()
         if (accessToken != null && !accessToken.isExpired) {
-            val intent = Intent(this.context, HomeActivity::class.java)
+            val intent = Intent(this.context, NewsfeedActivity::class.java)
             startActivity(intent)
         }
         LoginManager.getInstance().registerCallback(callBackManager, object :FacebookCallback<LoginResult>{
@@ -103,7 +108,7 @@ class LogIn_Fragment : Fragment() {
             }
 
             override fun onSuccess(result: LoginResult) {
-                val intent = Intent(context, HomeActivity::class.java)
+                val intent = Intent(context, NewsfeedActivity::class.java)
                 startActivity(intent)
             }
         })
@@ -134,7 +139,7 @@ class LogIn_Fragment : Fragment() {
                     auth.signInWithCredential(credential)
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
-                                val intent = Intent(this.context, HomeActivity::class.java)
+                                val intent = Intent(this.context, NewsfeedActivity::class.java)
                                 startActivity(intent)
                             } else {
                                 Toast.makeText(requireContext(), task.exception?.message , Toast.LENGTH_SHORT).show()
@@ -196,7 +201,8 @@ class LogIn_Fragment : Fragment() {
                     saveAccount()
                     // Sign in success, update UI with the signed-in user's information
                     val user = auth.currentUser
-                    val intent = Intent(this.context, HomeActivity::class.java)
+                    createUserOnDatabase()
+                    val intent = Intent(this.context, NewsfeedActivity::class.java)
                     intent.putExtra("email", user?.email)
                     startActivity(intent)
                 } else {
@@ -206,6 +212,21 @@ class LogIn_Fragment : Fragment() {
                         Toast.LENGTH_SHORT,
                     ).show()
                 }
+            }
+    }
+
+    private fun createUserOnDatabase() {
+        val userID = auth.uid.toString()
+        database.child(Constant.USER_TABLE_NAME).child(userID)
+            .setValue("Hello").addOnCompleteListener {
+                if (it.isSuccessful)
+                    Toast.makeText(
+                        context,
+                        "Data was stored!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                else
+                    Toast.makeText(context, "Error!", Toast.LENGTH_SHORT).show()
             }
     }
 
