@@ -15,10 +15,10 @@
         android:theme="@style/Base.Theme.ChatApp"
         tools:targetApi="31">
         <activity
-            android:name=".newsfeed.NewsfeedActivity"
+            android:name=".chat.Chat_Activity"
             android:exported="false" />
         <activity
-            android:name=".chat.HomeActivity"
+            android:name=".newsfeed.NewsfeedActivity"
             android:exported="false" />
         <activity
             android:name=".Main_Activity"
