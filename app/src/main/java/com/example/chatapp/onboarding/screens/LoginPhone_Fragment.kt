@@ -8,7 +8,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.example.chatapp.Constant
 import com.example.chatapp.databinding.LoginPhoneBinding
+import com.example.chatapp.model.Users
 import com.example.chatapp.newsfeed.NewsfeedActivity
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
@@ -19,6 +21,11 @@ import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import java.util.concurrent.TimeUnit
 
@@ -29,12 +36,14 @@ class LoginPhone_Fragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     private lateinit var mphoneNumber: String
     private var forceResendingToken: PhoneAuthProvider.ForceResendingToken? = null
+    private lateinit var database: DatabaseReference
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = LoginPhoneBinding.inflate(layoutInflater, container, false)
         auth = Firebase.auth
+        database = Firebase.database.reference
         verificationId = ""
         mphoneNumber = ""
         binding.sendOtp.setOnClickListener {
@@ -155,8 +164,8 @@ class LoginPhone_Fragment : Fragment() {
     private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
         auth.signInWithCredential(credential).addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                val intent = Intent(context, NewsfeedActivity::class.java)
-                startActivity(intent)
+                createUserOnDatabase()
+                loginSuccess()
             } else {
                 if (task.exception is FirebaseAuthInvalidCredentialsException) {
                     Toast.makeText(
@@ -165,5 +174,37 @@ class LoginPhone_Fragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun loginSuccess() {
+        val intent = Intent(context, NewsfeedActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun createUserOnDatabase() {
+        val userID = auth.uid.toString()
+        val user = Users(
+            userID,
+            0,
+            userID,
+            "https://firebasestorage.googleapis.com/v0/b/chat-application-2ee31.appspot.com/o/images%2Favatar.png?alt=media&token=dff0b5ac-8fbf-4c3f-bd2b-e9dac6ea1bf5&_gl=1*4fv8yt*_ga*NDEzMzYzMTQyLjE2OTcyNjIzMTk.*_ga_CW55HF8NVT*MTY5ODc5OTQ3OC4xNy4xLjE2OTg4MDAwMjEuNTQuMC4w",
+            "None",
+            0,
+            0
+        )
+
+        database.child(Constant.USER_TABLE_NAME).child(userID).addListenerForSingleValueEvent(object :
+            ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (!snapshot.exists()) {
+                    database.child(Constant.USER_TABLE_NAME).child(userID).setValue(user)
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+        })
     }
 }

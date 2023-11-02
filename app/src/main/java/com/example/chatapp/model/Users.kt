@@ -1,11 +1,15 @@
 package com.example.chatapp.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class Users(
-    val uid: String,
-    var age: Int = 0,
-    var name: String = "",
-    var avartar: String = "",
-    var gender: String = "",
-    var nFriends: Int = 0,
-    var nPosts: Int = 0
-)
+    var uid: String? = null,
+    var age: Int? = null,
+    var name: String? = null,
+    var avatar: String? = null,
+    var gender: String? = null,
+    var nFriends: Int? = null,
+    var nPosts: Int? = null
+): Parcelable
