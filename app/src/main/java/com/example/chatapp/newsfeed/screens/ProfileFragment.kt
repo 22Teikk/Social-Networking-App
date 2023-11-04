@@ -1,7 +1,10 @@
 package com.example.chatapp.newsfeed.screens
 
+import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
@@ -18,8 +21,11 @@ import android.widget.Spinner
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.chatapp.Constant
+import com.example.chatapp.Converters
 import com.example.chatapp.Main_Activity
 import com.example.chatapp.R
 import com.example.chatapp.databinding.FragmentProfileBinding
@@ -37,6 +43,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.squareup.picasso.Picasso
+import java.io.ByteArrayOutputStream
 
 
 class ProfileFragment : Fragment() {
@@ -66,6 +73,7 @@ class ProfileFragment : Fragment() {
         }
         //Change Information
         binding.changeInformation.setOnClickListener {
+            checkCameraPermission()
             updateProfileDialog()
         }
 
@@ -208,25 +216,40 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    val arl =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == AppCompatActivity.RESULT_OK) {
-                val imageView = result.data?.data as Uri
-                if (imageView != null) {
-                    try {
-                        var inputStream = requireContext().contentResolver.openInputStream(imageView)
-                        var bitmap = BitmapFactory.decodeStream(inputStream)
-                        imageAvatar.setImageBitmap(bitmap)
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                }
-            }
+    val arl = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == AppCompatActivity.RESULT_OK) {
+            val imageBitmap = result.data?.extras?.get("data") as Bitmap
+            uriAvatar = Converters.getImageUriFromBitmap(requireContext(), imageBitmap)
+            imageAvatar.setImageURI(uriAvatar)
         }
+    }
     private fun takePhoto() {
         arl.launch(Intent(MediaStore.ACTION_IMAGE_CAPTURE))
+//        startActivityForResult(Intent(MediaStore.ACTION_IMAGE_CAPTURE), 567)
     }
 
+    private fun checkCameraPermission() {
+        if (ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.CAMERA)
+            != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(requireActivity(),
+                arrayOf(android.Manifest.permission.CAMERA),
+                123)
+        } else {
+            takePhoto()
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if (grantResults.size > 0 && grantResults[0] ==
+            PackageManager.PERMISSION_GRANTED){
+            //permission from popup was granted
+            takePhoto()
+        }
+    }
 
     private val pickImage = registerForActivityResult(ActivityResultContracts.GetContent()) {
         imageAvatar.setImageURI(it)
