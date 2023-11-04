@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_marginHorizontal="@dimen/_8sdp"
+    android:orientation="vertical"
+    android:layout_height="wrap_content">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/avatarProfile"
+        android:layout_width="@dimen/_60sdp"
+        android:layout_height="@dimen/_60sdp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/baseline_person_24"
+        app:shapeAppearanceOverlay="@style/Circular"
+        app:strokeWidth="@dimen/_1sdp"
+        app:strokeColor="@color/grey" />
+    <TextView
+        android:gravity="center_horizontal"
+        android:id="@+id/friendNameItem"
+        android:layout_width="@dimen/_60sdp"
+        android:layout_height="wrap_content"
+        android:maxLines="2"
+        android:text="Name"
+        android:fontFamily="serif"
+        android:textAlignment="center"
+        android:textSize="@dimen/_16ssp"
+        android:textColor="@color/black"/>
+</LinearLayout>

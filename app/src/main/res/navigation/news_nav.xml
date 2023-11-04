@@ -9,7 +9,11 @@
         android:id="@+id/feedFragment"
         android:name="com.example.chatapp.newsfeed.screens.FeedFragment"
         android:label="Feeds"
-        tools:layout="@layout/fragment_feed" />
+        tools:layout="@layout/fragment_feed" >
+        <action
+            android:id="@+id/action_feedFragment_to_searchFriendFragment"
+            app:destination="@id/searchFriendFragment" />
+    </fragment>
     <fragment
         android:id="@+id/notificationsFragment"
         android:name="com.example.chatapp.newsfeed.screens.NotificationsFragment"
@@ -20,4 +24,13 @@
         android:name="com.example.chatapp.newsfeed.screens.ProfileFragment"
         android:label="Profile"
         tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/searchFriendFragment"
+        android:name="com.example.chatapp.newsfeed.screens.SearchFriendFragment"
+        android:label="Search Friend"
+        tools:layout="@layout/fragment_search_friend" >
+        <action
+            android:id="@+id/action_searchFriendFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
 </navigation>

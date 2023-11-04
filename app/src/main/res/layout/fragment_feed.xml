@@ -6,14 +6,51 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".newsfeed.screens.FeedFragment">
 
+    <LinearLayout
+        android:id="@+id/imageAddFriends"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_marginHorizontal="@dimen/_8sdp"
+        android:orientation="vertical"
+        android:layout_height="@dimen/_80sdp">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:layout_width="@dimen/_60sdp"
+        android:layout_height="@dimen/_60sdp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/baseline_add_24"
+        android:tint="@color/com_facebook_blue"
+        app:shapeAppearanceOverlay="@style/Circular"
+        app:strokeWidth="@dimen/_1sdp"
+        app:strokeColor="@color/grey" />
+    <TextView
+        android:gravity="center_horizontal"
+        android:layout_width="@dimen/_60sdp"
+        android:layout_height="wrap_content"
+        android:text="Add Friends"
+        android:fontFamily="serif"
+        android:textAlignment="center"
+        android:textSize="@dimen/_16ssp"
+        android:textColor="@color/black"/>
+
+    </LinearLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_80sdp"
+        android:id="@+id/rcvFriends"
+        android:paddingHorizontal="@dimen/_8sdp"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@layout/friend_item"
+        app:layout_constraintStart_toEndOf="@id/imageAddFriends"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcvNews"
         android:layout_width="match_parent"
-        android:padding="@dimen/_8sdp"
         android:layout_height="0dp"
         android:layout_margin="@dimen/_8sdp"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rcvFriends"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

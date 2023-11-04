@@ -6,6 +6,14 @@
     android:layout_height="match_parent"
     tools:context=".newsfeed.NewsfeedActivity">
 
+    <FrameLayout
+        android:id="@+id/overlayLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/grey"
+        android:visibility="gone">
+    </FrameLayout>
+
     <LinearLayout
         android:id="@+id/actionbarNews"
         android:layout_width="match_parent"
