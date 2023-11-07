@@ -153,7 +153,7 @@ class PostNewsFragment : Fragment() {
                     database.child(Constant.POST_TABLE_NAME).child(postID).addListenerForSingleValueEvent(object : ValueEventListener {
                         override fun onDataChange(snapshot: DataSnapshot) {
                             if (!snapshot.exists()) {
-                                database.child(Constant.POST_TABLE_NAME).child(postID).setValue(newPost).addOnCompleteListener {
+                                database.child(Constant.POST_TABLE_NAME).child(postID).setValue(newPost).addOnSuccessListener {
                                     progressDialog.dismiss()
                                     Toast.makeText(requireContext(), "Publish successful!", Toast.LENGTH_SHORT).show()
                                     findNavController().navigate(R.id.feedFragment)
