@@ -5,8 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.navigation.NavController
-import androidx.navigation.Navigation
-import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chatapp.Constant
 import com.example.chatapp.R
@@ -27,10 +25,7 @@ class SearchFriendAdapter(
     private lateinit var auth: FirebaseAuth
 
     inner class SearchViewHolder(val binding: FriendSearchItemBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-
-    }
-
+        RecyclerView.ViewHolder(binding.root)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
         return SearchViewHolder(
             FriendSearchItemBinding.inflate(

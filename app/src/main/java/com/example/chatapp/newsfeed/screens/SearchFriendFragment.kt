@@ -5,16 +5,19 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView.OnCloseListener
 import androidx.appcompat.widget.SearchView.OnQueryTextListener
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.chatapp.Constant
+import com.example.chatapp.R
 import com.example.chatapp.databinding.FragmentSearchFriendBinding
 import com.example.chatapp.model.Users
 import com.example.chatapp.newsfeed.adapter.SearchFriendAdapter
 import com.example.chatapp.newsfeed.adapter.SearchFriendBeforeAdapter
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -34,12 +37,15 @@ class SearchFriendFragment : Fragment() {
     ): View? {
         _binding = FragmentSearchFriendBinding.inflate(inflater, container, false)
 
+        hideActionBar()
+
         binding.apply {
             //For rcv search
             rcvFriendSearch.setHasFixedSize(true)
             rcvFriendSearch.layoutManager = LinearLayoutManager(requireContext())
             searchAdapter = SearchFriendAdapter(listUser, listUserSearchBefore, findNavController())
             rcvFriendSearch.adapter = searchAdapter
+
 
             //For rcv save friend search before
             rcvFriendSearchBefore.setHasFixedSize(true)
@@ -74,9 +80,34 @@ class SearchFriendFragment : Fragment() {
                     return true
                 }
             })
+            backToFeeds.setOnClickListener {
+                findNavController().navigate(R.id.feedFragment)
+            }
         }
 
         return binding.root
+    }
+
+    override fun onPause() {
+        val actionbar = activity?.findViewById<LinearLayout>(R.id.actionbarNews)
+        if (actionbar != null) {
+            actionbar.visibility = View.VISIBLE
+        }
+        val bottomNav = activity?.findViewById<BottomNavigationView>(R.id.bottomNavigationNews)
+        if (bottomNav != null) {
+            bottomNav.visibility = View.VISIBLE
+        }
+        super.onPause()
+    }
+    private fun hideActionBar() {
+        val actionbar = activity?.findViewById<LinearLayout>(R.id.actionbarNews)
+        if (actionbar != null) {
+            actionbar.visibility = View.GONE
+        }
+        val bottomNav = activity?.findViewById<BottomNavigationView>(R.id.bottomNavigationNews)
+        if (bottomNav != null) {
+            bottomNav.visibility = View.GONE
+        }
     }
 
     private fun queryFriendByName(queryName: String?) {

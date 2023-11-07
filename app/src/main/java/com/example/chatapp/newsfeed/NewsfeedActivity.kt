@@ -28,5 +28,8 @@ class NewsfeedActivity : AppCompatActivity() {
         binding.imgChat.setOnClickListener {
             startActivity(Intent(this, Chat_Activity::class.java))
         }
+        binding.addNews.setOnClickListener {
+            navController.navigate(R.id.action_feedFragment_to_postNewsFragment)
+        }
     }
 }
