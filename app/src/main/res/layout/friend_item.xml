@@ -4,12 +4,12 @@
     android:layout_width="wrap_content"
     android:layout_marginHorizontal="@dimen/_8sdp"
     android:orientation="vertical"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/avatarProfile"
-        android:layout_width="@dimen/_60sdp"
-        android:layout_height="@dimen/_60sdp"
+        android:layout_width="@dimen/_40sdp"
+        android:layout_height="@dimen/_40sdp"
         android:scaleType="centerCrop"
         android:src="@drawable/baseline_person_24"
         app:shapeAppearanceOverlay="@style/Circular"
@@ -18,12 +18,12 @@
     <TextView
         android:gravity="center_horizontal"
         android:id="@+id/friendNameItem"
-        android:layout_width="@dimen/_60sdp"
+        android:layout_width="@dimen/_40sdp"
         android:layout_height="wrap_content"
         android:maxLines="2"
         android:text="Name"
         android:fontFamily="serif"
         android:textAlignment="center"
-        android:textSize="@dimen/_16ssp"
+        android:textSize="@dimen/_10ssp"
         android:textColor="@color/black"/>
 </LinearLayout>

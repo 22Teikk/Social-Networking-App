@@ -30,10 +30,6 @@ class ListImagePostAdapter(
         holder.apply {
             binding.apply {
                 imagePost.setImageURI(imageUri)
-                deleteImagePost.setOnClickListener {
-                    listImagePost.removeAt(adapterPosition)
-                    notifyItemRemoved(adapterPosition)
-                }
             }
         }
     }

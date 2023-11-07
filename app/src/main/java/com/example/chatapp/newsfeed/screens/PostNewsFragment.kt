@@ -119,7 +119,6 @@ class PostNewsFragment : Fragment() {
         progressDialog.setCancelable(false)
 
         if (binding.inputContentPost.text.isNotEmpty()) {
-            progressDialog.show()
             val postID = database.child(Constant.POST_TABLE_NAME).push().key
             if (postID != null) {
                 val imageTasks = mutableListOf<Task<Uri>>() // Danh sách các tác vụ lưu trữ ảnh
@@ -147,29 +146,43 @@ class PostNewsFragment : Fragment() {
                         postID,
                         binding.inputContentPost.text.toString(),
                         listImage,
-                        uid = user.uid
+                        user.uid
                     )
 
-                    database.child(Constant.POST_TABLE_NAME).child(postID).addListenerForSingleValueEvent(object : ValueEventListener {
-                        override fun onDataChange(snapshot: DataSnapshot) {
-                            if (!snapshot.exists()) {
-                                database.child(Constant.POST_TABLE_NAME).child(postID).setValue(newPost).addOnSuccessListener {
-                                    progressDialog.dismiss()
-                                    Toast.makeText(requireContext(), "Publish successful!", Toast.LENGTH_SHORT).show()
-                                    findNavController().navigate(R.id.feedFragment)
+
+                    progressDialog.show()
+                    database.child(Constant.POST_TABLE_NAME).child(postID)
+                        .addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(snapshot: DataSnapshot) {
+                                if (!snapshot.exists()) {
+                                    database.child(Constant.POST_TABLE_NAME).child(postID)
+                                        .setValue(newPost).addOnSuccessListener {
+                                        progressDialog.dismiss()
+                                        Toast.makeText(
+                                            requireContext(),
+                                            "Publish successful!",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                        findNavController().navigate(R.id.feedFragment)
+                                    }
                                 }
                             }
-                        }
 
-                        override fun onCancelled(error: DatabaseError) {
-                            Toast.makeText(requireContext(), "Publish error!", Toast.LENGTH_SHORT).show()
-                        }
-                    })
+                            override fun onCancelled(error: DatabaseError) {
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Please choose the Image!",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        })
                 }
             }
         } else {
-            Toast.makeText(requireContext(), "The title of Post is not empty!", Toast.LENGTH_SHORT).show()
-        }    }
+            Toast.makeText(requireContext(), "The title of Post is not empty!", Toast.LENGTH_SHORT)
+                .show()
+        }
+    }
     //For publish Post
 
     private fun initUIrcv() {

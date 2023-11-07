@@ -6,6 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".newsfeed.screens.FeedFragment">
 
+
     <LinearLayout
         android:id="@+id/imageAddFriends"
         app:layout_constraintStart_toStartOf="parent"
@@ -16,23 +17,24 @@
         android:layout_height="@dimen/_80sdp">
 
     <com.google.android.material.imageview.ShapeableImageView
-        android:layout_width="@dimen/_60sdp"
-        android:layout_height="@dimen/_60sdp"
+        android:layout_width="@dimen/_40sdp"
+        android:layout_height="@dimen/_40sdp"
         android:scaleType="centerCrop"
-        android:src="@drawable/baseline_add_24"
+        android:src="@drawable/baseline_person_add_24"
         android:tint="@color/com_facebook_blue"
         app:shapeAppearanceOverlay="@style/Circular"
         app:strokeWidth="@dimen/_1sdp"
         app:strokeColor="@color/grey" />
     <TextView
         android:gravity="center_horizontal"
-        android:layout_width="@dimen/_60sdp"
+        android:layout_width="@dimen/_40sdp"
         android:layout_height="wrap_content"
-        android:text="Add Friends"
+        android:text="Add\n Friends"
+        android:maxLines="2"
         android:fontFamily="serif"
         android:textAlignment="center"
-        android:textSize="@dimen/_16ssp"
-        android:textColor="@color/black"/>
+        android:textSize="@dimen/_10ssp"
+        android:textColor="@color/com_facebook_blue"/>
 
     </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView
@@ -49,7 +51,24 @@
         android:id="@+id/rcvNews"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_margin="@dimen/_8sdp"
+        android:layout_marginHorizontal="@dimen/_8sdp"
+        tools:listitem="@layout/post_item"
+        app:layout_constraintTop_toBottomOf="@id/rcvFriends"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/txtRecomend"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:text="Add friends to be able to view news"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="@dimen/_20sdp"
+        android:layout_marginHorizontal="@dimen/_8sdp"
+        tools:listitem="@layout/post_item"
         app:layout_constraintTop_toBottomOf="@id/rcvFriends"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
