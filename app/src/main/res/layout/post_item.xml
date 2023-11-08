@@ -65,7 +65,8 @@
             android:layout_weight="1"
             android:layout_height="@dimen/_30sdp"
             android:padding="@dimen/_4sdp"
-            android:src="@drawable/baseline_favorite_before"/>
+            android:src="@drawable/baseline_favorite_before"
+             />
 
         <ImageView
             android:id="@+id/commentPost"

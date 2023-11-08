@@ -16,4 +16,6 @@ object Constant {
     //For Post Table
     const val POST_TABLE_NAME = "Post"
 
+    //For Like Table
+    const val LIKE_TABLE_NAME = "Like"
 }

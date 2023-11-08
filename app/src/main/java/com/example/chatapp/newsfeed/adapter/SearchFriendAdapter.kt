@@ -57,6 +57,7 @@ class SearchFriendAdapter(
                             .child(Constant.FOLLOW_TABLE_FOLLOWER).child(
                                 auth.uid!!
                             ).setValue(true)
+                        userListBefore.add(user)
                     }else {
                         Firebase.database.reference.child(Constant.FOLLOW_TABLE_NAME).child(auth.uid!!)
                             .child(Constant.FOLLOW_TABLE_FOLLOWING).child(
@@ -73,7 +74,7 @@ class SearchFriendAdapter(
                     followFriends.visibility = View.GONE
                 }
                 viewFriend.setOnClickListener {
-                    userListBefore.add(user)
+//                    userListBefore.add(user)
                     navController.navigate(R.id.action_searchFriendFragment_to_profileFragment)
                 }
 
