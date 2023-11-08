@@ -1,12 +1,10 @@
 package com.example.chatapp.newsfeed.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.chatapp.databinding.ImagePostItemInlistBinding
-import com.example.chatapp.databinding.ListImagePostItemBinding
 import com.squareup.picasso.Picasso
 
 class ImageInPostAdapter(

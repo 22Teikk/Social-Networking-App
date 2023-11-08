@@ -7,10 +7,8 @@ import com.example.chatapp.Constant
 import com.example.chatapp.databinding.PostItemBinding
 import com.example.chatapp.model.Posts
 import com.example.chatapp.model.Users
-import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
