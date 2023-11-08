@@ -45,6 +45,8 @@ class FeedFragment : Fragment() {
         initUIFollowingFriends()
         initUIPost()
 
+        refreshPost()
+
         binding.imageAddFriends.setOnClickListener {
             findNavController().navigate(R.id.action_feedFragment_to_searchFriendFragment)
         }
@@ -52,11 +54,19 @@ class FeedFragment : Fragment() {
         return binding.root
     }
 
+    private fun refreshPost() {
+        binding.refreshPost.setOnRefreshListener {
+            getPosts()
+            binding.refreshPost.isRefreshing = false
+        }
+    }
+
     private fun initUIFollowingFriends() {
         checkFollowing()
         binding.apply {
             rcvFriends.setHasFixedSize(true)
-            rcvFriends.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            rcvFriends.layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             followingAdapter = FollowingFriendsAdapter(followingList)
             rcvFriends.adapter = followingAdapter
         }
@@ -72,15 +82,16 @@ class FeedFragment : Fragment() {
     }
 
     private fun checkFollowing() {
-        database.child(Constant.FOLLOW_TABLE_NAME).child(auth.uid.toString()).child(Constant.FOLLOW_TABLE_FOLLOWING)
-            .addValueEventListener(object: ValueEventListener{
+        database.child(Constant.FOLLOW_TABLE_NAME).child(auth.uid.toString())
+            .child(Constant.FOLLOW_TABLE_FOLLOWING)
+            .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     followingList.clear()
                     snapshot.children.forEach {
                         followingList.add(it.key!!)
                     }
-                    getPosts()
                     followingAdapter.notifyDataSetChanged()
+                    getPosts()
                 }
 
                 override fun onCancelled(error: DatabaseError) {
@@ -90,30 +101,29 @@ class FeedFragment : Fragment() {
     }
 
     private fun getPosts() {
-        database.child(Constant.POST_TABLE_NAME).addValueEventListener(object : ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                postList.clear()
-                for(data in snapshot.children) {
-                    val post = data.getValue(Posts::class.java)
-                    for (id in followingList) {
-                        if (post != null) {
-                            if (post.publisher.equals(id)) {
-                                postList.add(post)
+        database.child(Constant.POST_TABLE_NAME)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    postList.clear()
+                    for (data in snapshot.children) {
+                        val post = data.getValue(Posts::class.java)
+                        for (id in followingList) {
+                            if (post != null) {
+                                if (post.publisher.equals(id)) {
+                                    postList.add(0, post)
+                                }
                             }
                         }
                     }
+                    if (postList.size == 0) {
+                        binding.rcvNews.visibility = View.GONE
+                    } else binding.txtRecomend.visibility = View.GONE
+                    postAdapter.notifyDataSetChanged()
                 }
-                if (postList.size == 0) {
-                    binding.rcvNews.visibility = View.GONE
-                }else binding.txtRecomend.visibility = View.GONE
-                postAdapter.notifyDataSetChanged()
-            }
 
-            override fun onCancelled(error: DatabaseError) {
+                override fun onCancelled(error: DatabaseError) {
 
-            }
-
-        })
+                }
+            })
     }
-
 }

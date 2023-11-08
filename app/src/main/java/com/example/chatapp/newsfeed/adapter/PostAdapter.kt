@@ -34,9 +34,10 @@ class PostAdapter(private val listPost: ArrayList<Posts>) :
         holder?.apply {
             binding?.apply {
                 val listImage: List<String>? = post.listPhoto
-                Picasso.get().load(listImage!![0]).into(listImagePost)
                 descriptionPost.text = post.title
                 post.publisher?.let { publisherInform(this, it) }
+                val adapter = ImageInPostAdapter(ArrayList(listImage), listImagePost)
+                listImagePost.adapter = adapter
             }
         }
     }

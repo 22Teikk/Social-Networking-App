@@ -164,7 +164,7 @@ class LoginPhone_Fragment : Fragment() {
     private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
         auth.signInWithCredential(credential).addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                createUserOnDatabase()
+                createUserOnDatabase(binding.inputPhone.text.toString())
                 loginSuccess()
             } else {
                 if (task.exception is FirebaseAuthInvalidCredentialsException) {
@@ -181,12 +181,12 @@ class LoginPhone_Fragment : Fragment() {
         startActivity(intent)
     }
 
-    private fun createUserOnDatabase() {
+    private fun createUserOnDatabase(name: String) {
         val userID = auth.uid.toString()
         val user = Users(
             userID,
             0,
-            userID,
+            name,
             "https://firebasestorage.googleapis.com/v0/b/chat-application-2ee31.appspot.com/o/images%2Favatar.png?alt=media&token=dff0b5ac-8fbf-4c3f-bd2b-e9dac6ea1bf5&_gl=1*4fv8yt*_ga*NDEzMzYzMTQyLjE2OTcyNjIzMTk.*_ga_CW55HF8NVT*MTY5ODc5OTQ3OC4xNy4xLjE2OTg4MDAwMjEuNTQuMC4w",
             "None",
             0,
@@ -198,6 +198,9 @@ class LoginPhone_Fragment : Fragment() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (!snapshot.exists()) {
                     database.child(Constant.USER_TABLE_NAME).child(userID).setValue(user)
+                    database.child(Constant.FOLLOW_TABLE_NAME).child(auth.uid!!)
+                        .child(Constant.FOLLOW_TABLE_FOLLOWING).child(auth.uid!!)
+                        .setValue(true)
                 }
             }
 

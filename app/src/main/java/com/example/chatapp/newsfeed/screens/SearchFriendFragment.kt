@@ -51,7 +51,6 @@ class SearchFriendFragment : Fragment() {
             rcvFriendSearchBefore.layoutManager = LinearLayoutManager(requireContext())
             searchBeforeAdapter = SearchFriendBeforeAdapter(listUserSearchBefore, findNavController())
             rcvFriendSearchBefore.adapter = searchBeforeAdapter
-            readUserSearchBefore(this)
 
             searchFriend.setOnSearchClickListener {
                 rcvFriendSearch.visibility = View.VISIBLE
@@ -128,11 +127,6 @@ class SearchFriendFragment : Fragment() {
 
                 }
             })
-    }
-
-    private fun readUserSearchBefore(fragmentSearchFriendBinding: FragmentSearchFriendBinding) {
-
-
     }
 
 }
