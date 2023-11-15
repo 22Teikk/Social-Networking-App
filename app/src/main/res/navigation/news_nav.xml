@@ -17,6 +17,11 @@
         <action
             android:id="@+id/action_feedFragment_to_postNewsFragment"
             app:destination="@id/postNewsFragment" />
+        <action
+            android:id="@+id/action_feedFragment_to_commentFragment"
+            app:destination="@id/commentFragment"
+            app:popUpTo="@id/feedFragment"
+            app:popUpToInclusive="false"/>
 
     </fragment>
     <fragment
@@ -48,4 +53,27 @@
         android:name="com.example.chatapp.newsfeed.screens.PostNewsFragment"
         android:label="Post"
         tools:layout="@layout/fragment_post_news" />
+    <fragment
+        android:id="@+id/commentFragment"
+        android:name="com.example.chatapp.newsfeed.screens.CommentFragment"
+        android:label="fragment_comment"
+        tools:layout="@layout/fragment_comment" >
+        <argument
+            android:name="postID"
+            app:argType="string" />
+        <argument
+            android:name="ownName"
+            app:argType="string" />
+        <argument
+            android:name="ownImage"
+            app:argType="string" />
+        <argument
+            android:name="title"
+            app:argType="string" />
+        <argument
+            android:name="authID"
+            app:argType="string" />
+        <argument android:name="publisherID"
+            app:argType="string" />
+    </fragment>
 </navigation>

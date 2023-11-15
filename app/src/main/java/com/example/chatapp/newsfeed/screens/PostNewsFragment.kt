@@ -65,7 +65,7 @@ class PostNewsFragment : Fragment() {
         initUIUser()
         binding.apply {
             backToFeeds.setOnClickListener {
-                findNavController().navigate(R.id.feedFragment)
+                requireActivity().supportFragmentManager.popBackStack()
             }
             btnPublish.setOnClickListener {
                 publishPost()

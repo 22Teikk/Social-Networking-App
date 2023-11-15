@@ -8,8 +8,7 @@ import com.example.chatapp.databinding.ImagePostItemInlistBinding
 import com.squareup.picasso.Picasso
 
 class ImageInPostAdapter(
-    private val imageList: ArrayList<String>,
-    private val viewPager2: ViewPager2
+    private val imageList: ArrayList<String>
 ) : RecyclerView.Adapter<ImageInPostAdapter.ImageInPostViewHolder>() {
 
     inner class ImageInPostViewHolder(val binding: ImagePostItemInlistBinding): RecyclerView.ViewHolder(binding.root)
@@ -29,14 +28,7 @@ class ImageInPostAdapter(
         holder.apply {
             binding.apply {
                 Picasso.get().load(image).into(imageInListImagePost)
-//                if (position == imageList.size - 1)
-//                    viewPager2.post(runnable)
             }
         }
-    }
-
-    private val runnable = Runnable {
-        imageList.addAll(imageList)
-        notifyDataSetChanged()
     }
 }

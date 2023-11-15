@@ -79,7 +79,7 @@ class SearchFriendFragment : Fragment() {
                 }
             })
             backToFeeds.setOnClickListener {
-                findNavController().navigate(R.id.feedFragment)
+                requireActivity().supportFragmentManager.popBackStack()
             }
         }
 

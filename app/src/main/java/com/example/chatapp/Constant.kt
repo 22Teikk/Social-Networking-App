@@ -18,4 +18,7 @@ object Constant {
 
     //For Like Table
     const val LIKE_TABLE_NAME = "Like"
+
+    //For Comment Table
+    const val COMMENT_TABLE_NAME = "Comment"
 }
