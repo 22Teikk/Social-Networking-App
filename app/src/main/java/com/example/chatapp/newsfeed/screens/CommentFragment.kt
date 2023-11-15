@@ -9,10 +9,12 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.chatapp.Constant
 import com.example.chatapp.R
 import com.example.chatapp.databinding.FragmentCommentBinding
 import com.example.chatapp.model.Comments
+import com.example.chatapp.newsfeed.adapter.CommentAdapter
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -27,6 +29,9 @@ class CommentFragment : Fragment() {
     private val binding get() = _binding
     private val args: CommentFragmentArgs by navArgs()
     private lateinit var database: DatabaseReference
+    private var listComment: ArrayList<Comments> = arrayListOf()
+    private lateinit var adapter: CommentAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -36,6 +41,8 @@ class CommentFragment : Fragment() {
 
         database = Firebase.database.reference
 
+        initCommentBefore()
+        getComment()
         binding.apply {
             backToFeeds.setOnClickListener {
                 findNavController().navigateUp()
@@ -54,14 +61,42 @@ class CommentFragment : Fragment() {
         return binding.root
     }
 
+    private fun initCommentBefore() {
+        binding.apply {
+            adapter = CommentAdapter(listComment)
+            rcvComment.setHasFixedSize(true)
+            rcvComment.layoutManager = LinearLayoutManager(requireContext())
+            rcvComment.adapter = adapter
+        }
+    }
+
+    private fun getComment() {
+        database.child(Constant.COMMENT_TABLE_NAME).child(args.postID)
+            .addValueEventListener(object : ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    listComment.clear()
+                    for (data in snapshot.children) {
+                        val comment = data.getValue(Comments::class.java)
+                        if (comment != null) {
+                            listComment.add(comment)
+                        }
+                    }
+                    adapter.notifyDataSetChanged()
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                }
+            })
+    }
+
     //Comment Post
     private fun commentPost() {
         binding.apply {
             if(edtComment.text.equals("")) {
                 Toast.makeText(requireContext(), "Can't send empty comment!", Toast.LENGTH_SHORT).show()
             }else {
-                val comments = Comments(edtComment.text.toString(), args.publisherID)
-                database.child(Constant.COMMENT_TABLE_NAME).child(args.postID).push().setValue(comments)
+                val comments = Comments(database.child(Constant.COMMENT_TABLE_NAME).push().key ,edtComment.text.toString(), args.authID)
+                database.child(Constant.COMMENT_TABLE_NAME).child(args.postID).child(comments.commentID.toString()).setValue(comments)
                     .addOnCompleteListener {
                         edtComment.setText("")
                     }
@@ -81,6 +116,12 @@ class CommentFragment : Fragment() {
                 }
             })
     }
+
+    override fun onStart() {
+        hideActionBar()
+        super.onStart()
+    }
+
     override fun onPause() {
         val actionbar = activity?.findViewById<LinearLayout>(R.id.actionbarNews)
         if (actionbar != null) {

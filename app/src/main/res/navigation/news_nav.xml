@@ -13,10 +13,14 @@
         <action
             android:id="@+id/action_feedFragment_to_searchFriendFragment"
             app:destination="@id/searchFriendFragment"
+            app:popUpTo="@id/feedFragment"
+            app:popUpToInclusive="false"
             />
         <action
             android:id="@+id/action_feedFragment_to_postNewsFragment"
-            app:destination="@id/postNewsFragment" />
+            app:destination="@id/postNewsFragment"
+            app:popUpTo="@id/feedFragment"
+            app:popUpToInclusive="false"/>
         <action
             android:id="@+id/action_feedFragment_to_commentFragment"
             app:destination="@id/commentFragment"

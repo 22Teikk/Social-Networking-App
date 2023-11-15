@@ -79,11 +79,16 @@ class SearchFriendFragment : Fragment() {
                 }
             })
             backToFeeds.setOnClickListener {
-                requireActivity().supportFragmentManager.popBackStack()
+                findNavController().navigateUp()
             }
         }
 
         return binding.root
+    }
+
+    override fun onStart() {
+        hideActionBar()
+        super.onStart()
     }
 
     override fun onPause() {

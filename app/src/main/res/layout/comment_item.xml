@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:orientation="horizontal"
+    android:padding="@dimen/_4sdp"
+    android:weightSum="5"
+    android:id="@+id/viewFriend"
+    android:layout_margin="@dimen/_4sdp"
+    android:layout_height="wrap_content">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:padding="@dimen/_3sdp"
+        android:id="@+id/avatarUserComment"
+        android:layout_width="@dimen/_40sdp"
+        android:layout_height="@dimen/_40sdp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/baseline_person_24"
+        app:shapeAppearanceOverlay="@style/Circular"
+        app:strokeWidth="@dimen/_1sdp"
+        app:strokeColor="@color/grey" />
+
+    <LinearLayout
+        android:layout_marginHorizontal="@dimen/_8sdp"
+        android:padding="@dimen/_3sdp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="5"
+        android:background="@drawable/background_comment"
+        android:orientation="vertical">
+
+        <TextView
+            android:gravity="start"
+            android:id="@+id/userNameComment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Name"
+            android:textStyle="bold"
+            android:fontFamily="serif"
+            android:textSize="@dimen/_16ssp"
+            android:textColor="@color/black"/>
+
+        <TextView
+            android:gravity="start"
+            android:id="@+id/commentContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Gender"
+            android:fontFamily="serif"
+            android:textSize="@dimen/_13ssp"
+            android:textColor="@color/black"/>
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

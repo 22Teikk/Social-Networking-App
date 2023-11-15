@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".newsfeed.screens.CommentFragment">
 
     <LinearLayout
@@ -102,14 +103,25 @@
         </LinearLayout>
     </LinearLayout>
 
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_1sdp"
+        android:background="@color/grey"
+        android:padding="@dimen/_8sdp"
+        android:layout_marginVertical="@dimen/_4sdp"
+        android:layout_marginHorizontal="@dimen/_15sdp"
+        app:layout_constraintTop_toBottomOf="@id/linear1"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcvComment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="@dimen/_8sdp"
+        tools:listitem="@layout/comment_item"
         android:padding="@dimen/_8sdp"
         app:layout_constraintBottom_toTopOf="@id/bottom_comments"
-        app:layout_constraintTop_toBottomOf="@id/linear1" />
+        app:layout_constraintTop_toBottomOf="@id/view" />
 
     <LinearLayout
         android:id="@+id/bottom_comments"
