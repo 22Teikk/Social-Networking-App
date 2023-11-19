@@ -129,7 +129,7 @@ class ProfileFragment : Fragment() {
         database.child(Constant.FOLLOW_TABLE_NAME).child(profileID).child(Constant.FOLLOW_TABLE_FOLLOWING)
             .addValueEventListener(object : ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    binding.countFollowing.text = snapshot.childrenCount.toString()
+                    binding.countFollowing.text = (snapshot.childrenCount - 1).toString()
                 }
 
                 override fun onCancelled(error: DatabaseError) {
@@ -142,7 +142,7 @@ class ProfileFragment : Fragment() {
         database.child(Constant.FOLLOW_TABLE_NAME).child(profileID).child(Constant.FOLLOW_TABLE_FOLLOWER)
             .addValueEventListener(object : ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    binding.countFollowers.text = snapshot.childrenCount.toString()
+                    binding.countFollowers.text = (snapshot.childrenCount - 1).toString()
                 }
 
                 override fun onCancelled(error: DatabaseError) {
