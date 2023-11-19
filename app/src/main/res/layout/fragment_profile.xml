@@ -6,9 +6,43 @@
     android:layout_height="match_parent"
     tools:context=".newsfeed.screens.ProfileFragment">
 
+    <LinearLayout
+        android:layout_width="0dp"
+        android:visibility="gone"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:orientation="horizontal"
+        android:id="@+id/actionBarProfile">
+        <ImageView
+            android:id="@+id/backToSearch"
+            android:layout_width="wrap_content"
+            android:padding="@dimen/_8sdp"
+            android:layout_height="@dimen/_30sdp"
+            android:src="@drawable/baseline_arrow_back_ios_new_24"
+            app:layout_constraintStart_toStartOf="parent"
+            android:gravity="center_vertical"
+            android:layout_margin="@dimen/_8sdp" />
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_30sdp"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:layout_margin="@dimen/_8sdp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:text="Profile"
+            android:textAlignment="center"
+            android:fontFamily="serif"
+            android:textSize="@dimen/_20ssp" />
+    </LinearLayout>
 
     <LinearLayout
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/actionBarProfile"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:id="@+id/linearLayout"
@@ -24,8 +58,8 @@
         android:orientation="vertical">
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/avatarProfile"
-            android:layout_width="@dimen/_80sdp"
-            android:layout_height="@dimen/_80sdp"
+            android:layout_width="@dimen/_60sdp"
+            android:layout_height="@dimen/_60sdp"
             android:scaleType="centerCrop"
             android:src="@drawable/baseline_person_24"
             app:shapeAppearanceOverlay="@style/Circular"
@@ -49,7 +83,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:layout_marginHorizontal="@dimen/_15sdp"
+            android:layout_marginHorizontal="@dimen/_8sdp"
             android:orientation="vertical">
 
             <TextView
@@ -70,7 +104,7 @@
                 android:paddingTop="@dimen/_15sdp"
                 android:text="Post"
                 android:textAlignment="center"
-                android:textSize="@dimen/_20ssp"
+                android:textSize="@dimen/_12ssp"
                 android:textStyle="bold" />
         </LinearLayout>
 
@@ -78,10 +112,11 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
+            android:layout_marginHorizontal="@dimen/_8sdp"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/countFriend"
+                android:id="@+id/countFollowers"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -96,11 +131,41 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:paddingTop="@dimen/_15sdp"
-                android:text="Friend"
+                android:text="Followers"
+                android:textAlignment="center"
+                android:textSize="@dimen/_12ssp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_marginHorizontal="@dimen/_8sdp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/countFollowing"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:paddingTop="@dimen/_15sdp"
+                android:text="1"
                 android:textAlignment="center"
                 android:textSize="@dimen/_20ssp"
                 android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:paddingTop="@dimen/_15sdp"
+                android:text="Following"
+                android:textAlignment="center"
+                android:textSize="@dimen/_12ssp"
+                android:textStyle="bold" />
         </LinearLayout>
+
 
 
         <LinearLayout
@@ -118,7 +183,7 @@
                 android:layout_weight="1"
                 android:id="@+id/changeInformation"
                 android:src="@drawable/baseline_manage_accounts_24"
-                android:contentDescription="@string/app_name" />
+                android:contentDescription="editProfile" />
             <ImageView
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_width="@dimen/_40sdp"
@@ -143,14 +208,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/linearLayout" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/imagePost"
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/optionsViewProfile"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tabMode="fixed"
+        app:tabIndicatorGravity="stretch"
+        app:tabIndicatorAnimationMode="elastic"
+        app:tabIndicatorColor="@null"/>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager2"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_margin="@dimen/_20sdp"
-        android:padding="@dimen/_8sdp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/optionsViewProfile"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/view" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

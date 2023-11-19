@@ -48,7 +48,7 @@ class FeedFragment : Fragment() {
         refreshPost()
 
         binding.imageAddFriends.setOnClickListener {
-            findNavController().navigate(R.id.action_feedFragment_to_searchFriendFragment)
+            findNavController().navigate(R.id.searchFriendFragment)
         }
 
         return binding.root
@@ -67,7 +67,7 @@ class FeedFragment : Fragment() {
             rcvFriends.setHasFixedSize(true)
             rcvFriends.layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            followingAdapter = FollowingFriendsAdapter(followingList)
+            followingAdapter = FollowingFriendsAdapter(followingList, findNavController())
             rcvFriends.adapter = followingAdapter
         }
     }

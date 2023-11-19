@@ -2,10 +2,12 @@ package com.example.chatapp.newsfeed.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chatapp.Constant
 import com.example.chatapp.databinding.FriendItemBinding
 import com.example.chatapp.model.Users
+import com.example.chatapp.newsfeed.screens.FeedFragmentDirections
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -13,7 +15,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
 
-class FollowingFriendsAdapter(private val followingList: List<String>):
+class FollowingFriendsAdapter(private val followingList: List<String>, val navController: NavController):
     RecyclerView.Adapter<FollowingFriendsAdapter.FollowingFriendsViewHolder>() {
     inner class FollowingFriendsViewHolder(val binding: FriendItemBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -44,6 +46,10 @@ class FollowingFriendsAdapter(private val followingList: List<String>):
                         }
 
                     })
+                avatarProfile.setOnClickListener {
+                    val action = FeedFragmentDirections.actionFeedFragmentToProfileFragment(uid)
+                    navController.navigate(action)
+                }
             }
         }
     }

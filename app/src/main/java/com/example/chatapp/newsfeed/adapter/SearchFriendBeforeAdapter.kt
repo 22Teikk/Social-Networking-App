@@ -10,6 +10,7 @@ import com.example.chatapp.Constant
 import com.example.chatapp.R
 import com.example.chatapp.databinding.FriendSearchItemBinding
 import com.example.chatapp.model.Users
+import com.example.chatapp.newsfeed.screens.SearchFriendFragmentDirections
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
@@ -75,7 +76,10 @@ class SearchFriendBeforeAdapter (
                     followFriends.visibility = View.GONE
                 }
                 viewFriend.setOnClickListener {
-                    navController.navigate(R.id.action_searchFriendFragment_to_profileFragment)
+                    val action = SearchFriendFragmentDirections.actionSearchFriendFragmentToProfileFragment(
+                        user.uid!!
+                    )
+                    navController.navigate(action)
                 }
 
             }

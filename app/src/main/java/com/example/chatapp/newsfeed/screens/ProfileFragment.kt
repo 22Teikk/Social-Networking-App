@@ -15,6 +15,8 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -22,13 +24,20 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
+import androidx.viewpager2.widget.ViewPager2
 import com.example.chatapp.Constant
 import com.example.chatapp.Converters
 import com.example.chatapp.Main_Activity
 import com.example.chatapp.R
 import com.example.chatapp.databinding.FragmentProfileBinding
+import com.example.chatapp.model.Posts
 import com.example.chatapp.model.Users
+import com.example.chatapp.newsfeed.adapter.OptionListProfileAdapter
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.imageview.ShapeableImageView
+import com.google.android.material.tabs.TabLayout
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -40,6 +49,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import com.google.protobuf.Value
 import com.squareup.picasso.Picasso
 
 
@@ -53,6 +63,8 @@ class ProfileFragment : Fragment() {
     private lateinit var userUpdate: Users
     private var uriAvatar: Uri? = null
     private lateinit var storageRef: StorageReference
+    private val args: ProfileFragmentArgs by navArgs()
+    private lateinit var profileID: String
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -62,7 +74,23 @@ class ProfileFragment : Fragment() {
         database = Firebase.database.reference
         storageRef = FirebaseStorage.getInstance().getReference(Constant.USER_IMAGE_PATH)
 
+        if (args.profileID.equals("")) profileID = auth.uid.toString()
+        else {
+            profileID = args.profileID
+            binding.apply {
+                logOut.visibility = View.GONE
+                isFollowing(profileID, changeInformation)
+                hideActionBar()
+                actionBarProfile.visibility = View.VISIBLE
+                backToSearch.setOnClickListener {
+                    findNavController().navigateUp()
+                }
+            }
+        }
         initUI()
+        countPosts()
+        countFollowers()
+        countFollowing()
         //Log Out
         binding.logOut.setOnClickListener {
             auth.signOut()
@@ -70,13 +98,98 @@ class ProfileFragment : Fragment() {
         }
         //Change Information
         binding.changeInformation.setOnClickListener {
-            checkCameraPermission()
-            updateProfileDialog()
+            if (binding.changeInformation.contentDescription.equals("editProfile")) {
+                checkCameraPermission()
+                updateProfileDialog()
+            }else if (binding.changeInformation.contentDescription.equals("Follow")) {
+                database.child(Constant.FOLLOW_TABLE_NAME).child(auth.uid!!)
+                    .child(Constant.FOLLOW_TABLE_FOLLOWING).child(
+                        profileID
+                    ).setValue(true)
+                database.child(Constant.FOLLOW_TABLE_NAME).child(profileID)
+                    .child(Constant.FOLLOW_TABLE_FOLLOWER).child(
+                        auth.uid!!
+                    ).setValue(true)
+            }else if (binding.changeInformation.contentDescription.equals("Following")){
+                database.child(Constant.FOLLOW_TABLE_NAME).child(auth.uid!!)
+                    .child(Constant.FOLLOW_TABLE_FOLLOWING).child(
+                        profileID
+                    ).removeValue()
+                database.child(Constant.FOLLOW_TABLE_NAME).child(profileID)
+                    .child(Constant.FOLLOW_TABLE_FOLLOWER).child(
+                        auth.uid!!
+                    ).removeValue()
+            }
         }
 
         return binding.root
     }
 
+    private fun countFollowing() {
+        database.child(Constant.FOLLOW_TABLE_NAME).child(profileID).child(Constant.FOLLOW_TABLE_FOLLOWING)
+            .addValueEventListener(object : ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    binding.countFollowing.text = snapshot.childrenCount.toString()
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+
+                }
+            })
+    }
+
+    private fun countFollowers() {
+        database.child(Constant.FOLLOW_TABLE_NAME).child(profileID).child(Constant.FOLLOW_TABLE_FOLLOWER)
+            .addValueEventListener(object : ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    binding.countFollowers.text = snapshot.childrenCount.toString()
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+
+                }
+            })
+    }
+
+    private fun countPosts() {
+        database.child(Constant.POST_TABLE_NAME).addValueEventListener(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                var i = 0
+                for (data in snapshot.children) {
+                    val post = data.getValue(Posts::class.java)
+                    if (post?.publisher.equals(profileID))
+                        i++
+                }
+                binding.countPost.text = i.toString()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+        })
+    }
+
+    fun isFollowing(userID: String, imageFollow: ImageView) {
+        database.child(Constant.FOLLOW_TABLE_NAME).child(auth.uid!!)
+            .child(Constant.FOLLOW_TABLE_FOLLOWING)
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.child(userID).exists()) {
+                        imageFollow.setImageResource(R.drawable.baseline_done_24)
+                        imageFollow.contentDescription = "Following"
+                    }
+                    else {
+                        imageFollow.setImageResource(R.drawable.baseline_add_24)
+                        imageFollow.contentDescription = "Follow"
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+
+                }
+
+            })
+    }
     private fun updateProfileDialog() {
         val dialog = Dialog(requireContext())
         dialog.setContentView(R.layout.dialog_update_profile)
@@ -260,13 +373,13 @@ class ProfileFragment : Fragment() {
     private fun initUI() {
         database.child(Constant.USER_TABLE_NAME).addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val user = snapshot.child(uid).getValue(Users::class.java)
+                val user = snapshot.child(profileID).getValue(Users::class.java)
                 user?.let {
                     userUpdate = it
                     binding.userName.text = user.name
                     Picasso.get().load(user.avatar).into(binding.avatarProfile)
                     binding.countPost.text = user.nPosts.toString()
-                    binding.countFriend.text = user.nFriends.toString()
+                  //  binding.countFriend.text = user.nFriends.toString()
                 }
             }
 
@@ -275,6 +388,59 @@ class ProfileFragment : Fragment() {
             }
 
         })
+
+        binding.optionsViewProfile.addTab(binding.optionsViewProfile.newTab().setIcon(R.drawable.baseline_grid_on_24))
+        binding.optionsViewProfile.addTab(binding.optionsViewProfile.newTab().setIcon(R.drawable.outline_share_24))
+        val adapter = OptionListProfileAdapter(childFragmentManager, lifecycle)
+        binding.viewPager2.adapter = adapter
+        binding.optionsViewProfile.addOnTabSelectedListener(object :TabLayout.OnTabSelectedListener{
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                if (tab != null) {
+                    binding.viewPager2.currentItem = tab.position
+                }
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+
+            }
+        })
+        binding.viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                binding.optionsViewProfile.selectTab(binding.optionsViewProfile.getTabAt(position))
+            }
+        })
     }
 
+    override fun onStart() {
+        if (profileID.equals(args.profileID))
+            hideActionBar()
+        super.onStart()
+    }
+
+    override fun onPause() {
+        val actionbar = activity?.findViewById<LinearLayout>(R.id.actionbarNews)
+        if (actionbar != null) {
+            actionbar.visibility = View.VISIBLE
+        }
+        val bottomNav = activity?.findViewById<BottomNavigationView>(R.id.bottomNavigationNews)
+        if (bottomNav != null) {
+            bottomNav.visibility = View.VISIBLE
+        }
+        super.onPause()
+    }
+    private fun hideActionBar() {
+        val actionbar = activity?.findViewById<LinearLayout>(R.id.actionbarNews)
+        if (actionbar != null) {
+            actionbar.visibility = View.GONE
+        }
+        val bottomNav = activity?.findViewById<BottomNavigationView>(R.id.bottomNavigationNews)
+        if (bottomNav != null) {
+            bottomNav.visibility = View.GONE
+        }
+    }
 }

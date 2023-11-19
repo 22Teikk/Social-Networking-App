@@ -66,6 +66,10 @@ class PostAdapter(private val listPost: ArrayList<Posts>, val navController: Nav
                     )
                     navController.navigate(action)
                 }
+                linear1.setOnClickListener {
+                    val action = FeedFragmentDirections.actionFeedFragmentToProfileFragment(post.publisher.toString())
+                    navController.navigate(action)
+                }
             }
         }
     }
