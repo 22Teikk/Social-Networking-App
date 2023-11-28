@@ -390,8 +390,9 @@ class ProfileFragment : Fragment() {
         })
 
         binding.optionsViewProfile.addTab(binding.optionsViewProfile.newTab().setIcon(R.drawable.baseline_grid_on_24))
-        binding.optionsViewProfile.addTab(binding.optionsViewProfile.newTab().setIcon(R.drawable.outline_share_24))
-        val adapter = OptionListProfileAdapter(childFragmentManager, lifecycle)
+        if (profileID.equals(auth.uid))
+            binding.optionsViewProfile.addTab(binding.optionsViewProfile.newTab().setIcon(R.drawable.outline_share_24))
+        val adapter = OptionListProfileAdapter(childFragmentManager, lifecycle, profileID)
         binding.viewPager2.adapter = adapter
         binding.optionsViewProfile.addOnTabSelectedListener(object :TabLayout.OnTabSelectedListener{
             override fun onTabSelected(tab: TabLayout.Tab?) {
