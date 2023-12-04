@@ -21,4 +21,7 @@ object Constant {
 
     //For Comment Table
     const val COMMENT_TABLE_NAME = "Comment"
+
+    //For Save Table
+    const val SAVE_TABLE_NAME = "Save"
 }

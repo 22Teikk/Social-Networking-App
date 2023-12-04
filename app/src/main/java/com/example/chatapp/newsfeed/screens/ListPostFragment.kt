@@ -54,8 +54,7 @@ class ListPostFragment() : Fragment() {
     }
 
     fun loadPost() {
-        database.child(Constant.POST_TABLE_NAME)
-            .addValueEventListener(object :ValueEventListener{
+        database.child(Constant.POST_TABLE_NAME).addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     for (data in snapshot.children) {
                         val post = data.getValue(Posts::class.java)
@@ -68,10 +67,9 @@ class ListPostFragment() : Fragment() {
                         }
                     }
                 }
-
                 override fun onCancelled(error: DatabaseError) {
 
                 }
-            })
+        })
     }
 }

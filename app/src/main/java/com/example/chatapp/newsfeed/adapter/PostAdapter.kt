@@ -48,6 +48,7 @@ class PostAdapter(private val listPost: ArrayList<Posts>, val navController: Nav
                 descriptionPost.text = post.title
                 post.publisher?.let { publisherInform(this, it) }
                 post.pid?.let { isLike(this, it) }
+                post.pid?.let { isSave(this, it) }
                 post.pid?.let { countLike(binding, it) }
                 val adapter = ImageInPostAdapter(ArrayList(listImage))
                 listImagePost.adapter = adapter
@@ -66,6 +67,11 @@ class PostAdapter(private val listPost: ArrayList<Posts>, val navController: Nav
                     )
                     navController.navigate(action)
                 }
+
+                savePost.setOnClickListener {
+                    post.pid?.let { it1 -> SavePost(this, it1) }
+                }
+
                 linear1.setOnClickListener {
                     val action = FeedFragmentDirections.actionFeedFragmentToProfileFragment(post.publisher.toString())
                     navController.navigate(action)
@@ -73,6 +79,38 @@ class PostAdapter(private val listPost: ArrayList<Posts>, val navController: Nav
             }
         }
     }
+
+    //For Save Post
+    private fun SavePost(binding: PostItemBinding, postId: String) {
+        if (binding.savePost.tag.equals("Save")) {
+            auth.uid?.let {
+                database.child(Constant.SAVE_TABLE_NAME).child(it).child(postId).setValue(true)
+            }
+        } else {
+            auth.uid?.let {
+                database.child(Constant.SAVE_TABLE_NAME).child(it).child(postId).removeValue()
+            }
+        }
+    }
+    private fun isSave(binding: PostItemBinding, postId: String) {
+        database.child(Constant.SAVE_TABLE_NAME).child(auth.uid.toString())
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.child(postId).exists()) {
+                        binding.savePost.setImageResource(R.drawable.baseline_flag_24)
+                        binding.savePost.setTag("Saved")
+                    } else {
+                        binding.savePost.setImageResource(R.drawable.baseline_outlined_flag_24)
+                        binding.savePost.setTag("Save")
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+
+                }
+            })
+    }
+    //For Save Post
 
     //Set action like Post
     private fun likePostFromAuth(binding: PostItemBinding, postId: String) {

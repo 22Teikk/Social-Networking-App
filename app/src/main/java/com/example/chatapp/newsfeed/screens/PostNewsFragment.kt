@@ -119,64 +119,69 @@ class PostNewsFragment : Fragment() {
         progressDialog.setCancelable(false)
 
         if (binding.inputContentPost.text.isNotEmpty()) {
-            val postID = database.child(Constant.POST_TABLE_NAME).push().key
-            if (postID != null) {
-                val imageTasks = mutableListOf<Task<Uri>>() // Danh sách các tác vụ lưu trữ ảnh
+            if (uriImagePost.size != 0) {
+                val postID = database.child(Constant.POST_TABLE_NAME).push().key
+                if (postID != null) {
+                    val imageTasks = mutableListOf<Task<Uri>>() // Danh sách các tác vụ lưu trữ ảnh
 
-                uriImagePost?.forEach { uri ->
-                    val imageRef = storageReference.child(postID).child(uri.lastPathSegment!!)
-                    val uploadTask = imageRef.putFile(uri)
+                    uriImagePost?.forEach { uri ->
+                        val imageRef = storageReference.child(postID).child(uri.lastPathSegment!!)
+                        val uploadTask = imageRef.putFile(uri)
 
-                    // Thêm tác vụ lưu trữ vào danh sách
-                    imageTasks.add(uploadTask.continueWithTask { task ->
-                        if (!task.isSuccessful) {
-                            task.exception?.let {
-                                throw it
-                            }
-                        }
-                        // Lấy URL của ảnh sau khi lưu trữ thành công
-                        imageRef.downloadUrl
-                    })
-                }
-
-                // Sử dụng Task.whenAllSuccess để chờ tất cả các tác vụ lưu trữ hoàn tất
-                Tasks.whenAllSuccess<Uri>(imageTasks).addOnSuccessListener { downloadUrls ->
-                    val listImage = downloadUrls.map { it.toString() }
-                    val newPost = Posts(
-                        postID,
-                        binding.inputContentPost.text.toString(),
-                        listImage,
-                        user.uid
-                    )
-
-
-                    progressDialog.show()
-                    database.child(Constant.POST_TABLE_NAME).child(postID)
-                        .addListenerForSingleValueEvent(object : ValueEventListener {
-                            override fun onDataChange(snapshot: DataSnapshot) {
-                                if (!snapshot.exists()) {
-                                    database.child(Constant.POST_TABLE_NAME).child(postID)
-                                        .setValue(newPost).addOnSuccessListener {
-                                        progressDialog.dismiss()
-                                        Toast.makeText(
-                                            requireContext(),
-                                            "Publish successful!",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                        findNavController().navigate(R.id.feedFragment)
-                                    }
+                        // Thêm tác vụ lưu trữ vào danh sách
+                        imageTasks.add(uploadTask.continueWithTask { task ->
+                            if (!task.isSuccessful) {
+                                task.exception?.let {
+                                    throw it
                                 }
                             }
-
-                            override fun onCancelled(error: DatabaseError) {
-                                Toast.makeText(
-                                    requireContext(),
-                                    "Please choose the Image!",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
+                            // Lấy URL của ảnh sau khi lưu trữ thành công
+                            imageRef.downloadUrl
                         })
+                    }
+
+                    // Sử dụng Task.whenAllSuccess để chờ tất cả các tác vụ lưu trữ hoàn tất
+                    Tasks.whenAllSuccess<Uri>(imageTasks).addOnSuccessListener { downloadUrls ->
+                        val listImage = downloadUrls.map { it.toString() }
+                        val newPost = Posts(
+                            postID,
+                            binding.inputContentPost.text.toString(),
+                            listImage,
+                            user.uid
+                        )
+
+
+                        progressDialog.show()
+                        database.child(Constant.POST_TABLE_NAME).child(postID)
+                            .addListenerForSingleValueEvent(object : ValueEventListener {
+                                override fun onDataChange(snapshot: DataSnapshot) {
+                                    if (!snapshot.exists()) {
+                                        database.child(Constant.POST_TABLE_NAME).child(postID)
+                                            .setValue(newPost).addOnSuccessListener {
+                                                progressDialog.dismiss()
+                                                Toast.makeText(
+                                                    requireContext(),
+                                                    "Publish successful!",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                                findNavController().navigate(R.id.feedFragment)
+                                            }
+                                    }
+                                }
+
+                                override fun onCancelled(error: DatabaseError) {
+                                    Toast.makeText(
+                                        requireContext(),
+                                        "Please choose the Image!",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            })
+                    }
                 }
+            } else {
+                Toast.makeText(requireContext(), "Your post needs at least 1 photo", Toast.LENGTH_SHORT)
+                    .show()
             }
         } else {
             Toast.makeText(requireContext(), "The title of Post is not empty!", Toast.LENGTH_SHORT)
