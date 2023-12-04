@@ -11,5 +11,6 @@ data class Users(
     var avatar: String? = null,
     var gender: String? = null,
     var nFriends: Int? = null,
-    var nPosts: Int? = null
+    var nPosts: Int? = null,
+    var bio:String? = null
 ): Parcelable

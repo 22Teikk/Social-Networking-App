@@ -228,7 +228,8 @@ class LogIn_Fragment : Fragment() {
             "https://firebasestorage.googleapis.com/v0/b/chat-application-2ee31.appspot.com/o/images%2Favatar.png?alt=media&token=dff0b5ac-8fbf-4c3f-bd2b-e9dac6ea1bf5&_gl=1*4fv8yt*_ga*NDEzMzYzMTQyLjE2OTcyNjIzMTk.*_ga_CW55HF8NVT*MTY5ODc5OTQ3OC4xNy4xLjE2OTg4MDAwMjEuNTQuMC4w",
             "None",
             0,
-            0
+            0,
+            ""
         )
 
         database.child(Constant.USER_TABLE_NAME).child(userID).addListenerForSingleValueEvent(object :ValueEventListener{

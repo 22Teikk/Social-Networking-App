@@ -65,18 +65,7 @@
             app:shapeAppearanceOverlay="@style/Circular"
             app:strokeColor="@color/black" />
 
-        <TextView
-            android:gravity="center_horizontal"
-            android:id="@+id/userName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:maxLines="1"
-            android:paddingTop="@dimen/_15sdp"
-            android:text="Name"
-            android:fontFamily="serif"
-            android:textAlignment="center"
-            android:textSize="@dimen/_20ssp"
-            android:textStyle="bold" />
+
     </LinearLayout>
 
         <LinearLayout
@@ -166,8 +155,6 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
-
-
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -198,6 +185,42 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/linearLayout"
+        android:id="@+id/linearLayout2"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/userName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:paddingTop="@dimen/_15sdp"
+            android:text="Name"
+            android:fontFamily="serif"
+            android:padding="@dimen/_8sdp"
+            android:textSize="@dimen/_16ssp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/userBio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:paddingTop="@dimen/_15sdp"
+            android:text="Name"
+            android:visibility="gone"
+            android:textColor="#444243"
+            android:fontFamily="serif"
+            android:padding="@dimen/_8sdp"
+            android:textSize="@dimen/_13ssp" />
+
+    </LinearLayout>
+
     <View
         android:id="@+id/view"
         android:layout_width="0dp"
@@ -206,7 +229,7 @@
         android:background="#87CBCA"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/linearLayout" />
+        app:layout_constraintTop_toBottomOf="@id/linearLayout2" />
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/optionsViewProfile"

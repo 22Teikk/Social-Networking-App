@@ -149,6 +149,35 @@
         </LinearLayout>
 
         <LinearLayout
+            android:layout_marginVertical="@dimen/_8sdp"
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bio:"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_16ssp"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layoutInputBio"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/black">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/inputBio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
             android:weightSum="2"
             android:layout_marginVertical="@dimen/_8sdp"
             android:layout_width="fill_parent"

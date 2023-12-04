@@ -220,12 +220,14 @@ class ProfileFragment : Fragment() {
         imageAvatar = dialog.findViewById<ShapeableImageView>(R.id.avatarProfile)
         val imageCamera = dialog.findViewById<ShapeableImageView>(R.id.takePhoto)
         val name = dialog.findViewById<TextInputEditText>(R.id.inputName)
+        val bio = dialog.findViewById<TextInputEditText>(R.id.inputBio)
         val spnGender = dialog.findViewById<Spinner>(R.id.spnGender)
         val spnAge = dialog.findViewById<Spinner>(R.id.spnAge)
         val save = dialog.findViewById<Button>(R.id.update)
 
         Picasso.get().load(userUpdate.avatar).into(imageAvatar)
         name.setText(userUpdate.name.toString())
+        bio.setText(userUpdate.bio.toString())
 
         //Select Image From Galary
         imageGallery.setOnClickListener {
@@ -297,21 +299,21 @@ class ProfileFragment : Fragment() {
                 it.visibility = View.GONE
             }
             if (!name.text.isNullOrEmpty()) {
-                saveOnDatabase(name.text.toString(), gender, age)
+                saveOnDatabase(name.text.toString(), gender, age, bio.text.toString())
             }
             dialog.dismiss()
         }
     }
 
-    private fun saveOnDatabase(name: String, gender: String, age: Int) {
-        uriAvatar?.let {
-            storageRef.child(uid).putFile(it)
+    private fun saveOnDatabase(name: String, gender: String, age: Int, bio: String) {
+        if (uriAvatar != null) {
+            storageRef.child(uid).putFile(uriAvatar!!)
                 .addOnSuccessListener { task ->
                     task.metadata!!.reference!!.downloadUrl
                         .addOnCompleteListener { tempUrl ->
                             val imgUrl = tempUrl.result.toString()
                             val contacts =
-                                Users(uid, age, name, imgUrl, gender)
+                                Users(uid, age, name, imgUrl, gender, bio = bio)
                             database.child(Constant.USER_TABLE_NAME).child(uid)
                                 .setValue(contacts).addOnCompleteListener {
                                     if (it.isSuccessful)
@@ -324,6 +326,20 @@ class ProfileFragment : Fragment() {
                                         Toast.makeText(context, "Error!", Toast.LENGTH_SHORT).show()
                                 }
                         }
+                }
+        }else {
+            val contacts =
+                Users(uid, age, name, userUpdate.avatar, gender, bio = bio)
+            database.child(Constant.USER_TABLE_NAME).child(uid)
+                .setValue(contacts).addOnCompleteListener {
+                    if (it.isSuccessful)
+                        Toast.makeText(
+                            context,
+                            "Data was stored!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    else
+                        Toast.makeText(context, "Error!", Toast.LENGTH_SHORT).show()
                 }
         }
     }
@@ -380,8 +396,12 @@ class ProfileFragment : Fragment() {
                     userUpdate = it
                     binding.userName.text = user.name
                     Picasso.get().load(user.avatar).into(binding.avatarProfile)
-                    binding.countPost.text = user.nPosts.toString()
-                  //  binding.countFriend.text = user.nFriends.toString()
+                    countPosts()
+                    if (user.bio == "" || user.bio.equals(null)) binding.userBio.visibility = View.GONE
+                    else {
+                        binding.userBio.visibility = View.VISIBLE
+                        binding.userBio.text = user.bio
+                    }
                 }
             }
 
