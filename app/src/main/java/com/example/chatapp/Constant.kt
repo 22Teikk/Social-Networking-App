@@ -24,4 +24,7 @@ object Constant {
 
     //For Save Table
     const val SAVE_TABLE_NAME = "Save"
+
+    //For Notification Table
+    const val NOTIFICATION_TABLE_NAME = "Notification"
 }

@@ -10,12 +10,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.chatapp.Constant
 import com.example.chatapp.R
 import com.example.chatapp.databinding.FriendSearchItemBinding
+import com.example.chatapp.model.Notifications
 import com.example.chatapp.model.Users
 import com.example.chatapp.newsfeed.screens.SearchFriendFragmentDirections
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
@@ -25,6 +27,7 @@ class SearchFriendAdapter(
     private val userList: ArrayList<Users>,private val userListBefore: ArrayList<Users>, val navController: NavController
 ) : RecyclerView.Adapter<SearchFriendAdapter.SearchViewHolder>() {
     private lateinit var auth: FirebaseAuth
+    private lateinit var database: DatabaseReference
 
     inner class SearchViewHolder(val binding: FriendSearchItemBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -43,6 +46,8 @@ class SearchFriendAdapter(
     override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
         val user = userList[position]
         auth = Firebase.auth
+        database = Firebase.database.reference
+
         holder.apply {
             binding.apply {
                 Picasso.get().load(user.avatar).into(avatarFriendSearchItem)
@@ -59,6 +64,7 @@ class SearchFriendAdapter(
                             .child(Constant.FOLLOW_TABLE_FOLLOWER).child(
                                 auth.uid!!
                             ).setValue(true)
+                        addNotification(user.uid!!, "Start following you")
                         userListBefore.add(user)
                     }else {
                         Firebase.database.reference.child(Constant.FOLLOW_TABLE_NAME).child(auth.uid!!)
@@ -88,7 +94,6 @@ class SearchFriendAdapter(
     }
 
     fun isFollowing(userID: String, imageFollow: ImageView) {
-        val database = Firebase.database.reference
         database.child(Constant.FOLLOW_TABLE_NAME).child(auth.uid!!)
             .child(Constant.FOLLOW_TABLE_FOLLOWING)
             .addValueEventListener(object : ValueEventListener {
@@ -108,5 +113,10 @@ class SearchFriendAdapter(
                 }
 
             })
+    }
+
+    private fun addNotification(userId: String, content: String) {
+        val notifications = Notifications(auth.uid.toString(), content, "")
+        database.child(Constant.NOTIFICATION_TABLE_NAME).child(userId).push().setValue(notifications)
     }
 }

@@ -14,8 +14,10 @@ import com.example.chatapp.Constant
 import com.example.chatapp.R
 import com.example.chatapp.databinding.FragmentCommentBinding
 import com.example.chatapp.model.Comments
+import com.example.chatapp.model.Notifications
 import com.example.chatapp.newsfeed.adapter.CommentAdapter
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -99,6 +101,7 @@ class CommentFragment : Fragment() {
                 database.child(Constant.COMMENT_TABLE_NAME).child(args.postID).child(comments.commentID.toString()).setValue(comments)
                     .addOnCompleteListener {
                         edtComment.setText("")
+                        addNotification("Comment your post: " + comments.comment)
                     }
             }
         }
@@ -115,6 +118,12 @@ class CommentFragment : Fragment() {
                     Toast.makeText(requireContext(), "Cannot load your Image!", Toast.LENGTH_SHORT).show()
                 }
             })
+    }
+
+    //For create Notification
+    private fun addNotification(content: String) {
+        val notifications = Notifications(Firebase.auth.uid, content, args.postID)
+        database.child(Constant.NOTIFICATION_TABLE_NAME).child(args.publisherID).push().setValue(notifications)
     }
 
     override fun onStart() {

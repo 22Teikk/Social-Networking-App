@@ -35,7 +35,14 @@
         android:id="@+id/notificationsFragment"
         android:name="com.example.chatapp.newsfeed.screens.NotificationsFragment"
         android:label="Notifications"
-        tools:layout="@layout/fragment_notifications" />
+        tools:layout="@layout/fragment_notifications" >
+        <action
+            android:id="@+id/action_notificationsFragment_to_postDetailFragment"
+            app:destination="@id/postDetailFragment" />
+        <action
+            android:id="@+id/action_notificationsFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.example.chatapp.newsfeed.screens.ProfileFragment"
@@ -92,6 +99,9 @@
             android:name="authID"
             app:argType="string" />
         <argument android:name="publisherID"
+            app:argType="string" />
+        <argument
+            android:name="userID"
             app:argType="string" />
     </fragment>
     <fragment

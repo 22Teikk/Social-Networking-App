@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.chatapp.Constant
 import com.example.chatapp.R
 import com.example.chatapp.databinding.PostItemBinding
+import com.example.chatapp.model.Notifications
 import com.example.chatapp.model.Posts
 import com.example.chatapp.model.Users
 import com.example.chatapp.newsfeed.screens.FeedFragmentDirections
@@ -21,8 +22,13 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
+import java.util.concurrent.SubmissionPublisher
 
-class PostAdapter(private val listPost: ArrayList<Posts>, val navController: NavController, val isProfile: Boolean) :
+class PostAdapter(
+    private val listPost: ArrayList<Posts>,
+    val navController: NavController,
+    val isProfile: Boolean
+) :
     RecyclerView.Adapter<PostAdapter.PostViewHolder>() {
     private lateinit var database: DatabaseReference
     private lateinit var auth: FirebaseAuth
@@ -56,18 +62,20 @@ class PostAdapter(private val listPost: ArrayList<Posts>, val navController: Nav
                 listImagePost.adapter = adapter
 
                 likePost.setOnClickListener {
-                    post.pid?.let { it1 -> likePostFromAuth(this, it1) }
+                    post.pid?.let { it1 -> likePostFromAuth(this, it1, post.publisher.toString()) }
                 }
                 commentPost.setOnClickListener {
                     if (isProfile) {
-                        val action = PostDetailFragmentDirections.actionPostDetailFragmentToCommentFragment(
-                            post.pid.toString(),
-                            user.name.toString(),
-                            user.avatar.toString(),
-                            post.title.toString(),
-                            auth.uid.toString(),
-                            post.publisher.toString()
-                        )
+                        val action =
+                            PostDetailFragmentDirections.actionPostDetailFragmentToCommentFragment(
+                                post.pid.toString(),
+                                user.name.toString(),
+                                user.avatar.toString(),
+                                post.title.toString(),
+                                auth.uid.toString(),
+                                post.publisher.toString(),
+                                user.uid.toString()
+                            )
                         navController.navigate(action)
                     } else {
                         val action = FeedFragmentDirections.actionFeedFragmentToCommentFragment(
@@ -76,7 +84,8 @@ class PostAdapter(private val listPost: ArrayList<Posts>, val navController: Nav
                             user.avatar.toString(),
                             post.title.toString(),
                             auth.uid.toString(),
-                            post.publisher.toString()
+                            post.publisher.toString(),
+                            user.uid.toString()
                         )
                         navController.navigate(action)
                     }
@@ -87,17 +96,19 @@ class PostAdapter(private val listPost: ArrayList<Posts>, val navController: Nav
                 }
 
                 avatarUser.setOnClickListener {
-                    val action = FeedFragmentDirections.actionFeedFragmentToProfileFragment(post.publisher.toString())
+                    val action =
+                        FeedFragmentDirections.actionFeedFragmentToProfileFragment(post.publisher.toString())
                     navController.navigate(action)
                 }
 
                 userName.setOnClickListener {
-                    val action = FeedFragmentDirections.actionFeedFragmentToProfileFragment(post.publisher.toString())
+                    val action =
+                        FeedFragmentDirections.actionFeedFragmentToProfileFragment(post.publisher.toString())
                     navController.navigate(action)
                 }
 
                 viewDetailPost.setOnClickListener {
-                    
+
                 }
             }
         }
@@ -115,6 +126,7 @@ class PostAdapter(private val listPost: ArrayList<Posts>, val navController: Nav
             }
         }
     }
+
     private fun isSave(binding: PostItemBinding, postId: String) {
         database.child(Constant.SAVE_TABLE_NAME).child(auth.uid.toString())
             .addValueEventListener(object : ValueEventListener {
@@ -136,10 +148,11 @@ class PostAdapter(private val listPost: ArrayList<Posts>, val navController: Nav
     //For Save Post
 
     //Set action like Post
-    private fun likePostFromAuth(binding: PostItemBinding, postId: String) {
+    private fun likePostFromAuth(binding: PostItemBinding, postId: String, userID: String) {
         if (binding.likePost.tag.equals("Like")) {
             auth.uid?.let {
                 database.child(Constant.LIKE_TABLE_NAME).child(postId).child(it).setValue(true)
+                addNotification(userID, postId, "Like your post!")
             }
         } else {
             auth.uid?.let {
@@ -206,4 +219,9 @@ class PostAdapter(private val listPost: ArrayList<Posts>, val navController: Nav
     }
     //For set user Information
 
+    //For create Notification
+    private fun addNotification(userId: String, postID: String, content: String) {
+        val notifications = Notifications(auth.uid, content, pid = postID)
+        database.child(Constant.NOTIFICATION_TABLE_NAME).child(userId).push().setValue(notifications)
+    }
 }
