@@ -4,17 +4,22 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chatapp.Constant
 import com.example.chatapp.databinding.ListImagePostItemBinding
 import com.example.chatapp.databinding.ListPostItemBinding
+import com.example.chatapp.newsfeed.screens.FeedFragmentDirections
+import com.example.chatapp.newsfeed.screens.ProfileFragmentDirections
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
 
 class SummaryPostAdapter (
     private val listSummaryPost: ArrayList<String>,
-    private val listCountPost: ArrayList<Int>
+    private val listCountPost: ArrayList<Int>,
+    val navController: NavController,
+    private val listPostID: ArrayList<String>
     ): RecyclerView.Adapter<SummaryPostAdapter.SummaryPostViewHolder>() {
 
     inner class SummaryPostViewHolder(val binding: ListPostItemBinding) :
@@ -40,6 +45,10 @@ class SummaryPostAdapter (
                 val count = listCountPost[position] - 1
                 if (count > 0) moreImages.visibility = View.VISIBLE
                 else moreImages.visibility = View.GONE
+                postImage.setOnClickListener {
+                    val action = ProfileFragmentDirections.actionProfileFragmentToPostDetailFragment(listPostID[position])
+                    navController.navigate(action)
+                }
             }
         }
     }

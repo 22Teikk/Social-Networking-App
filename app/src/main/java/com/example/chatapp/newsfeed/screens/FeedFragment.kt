@@ -76,7 +76,7 @@ class FeedFragment : Fragment() {
         binding.apply {
             rcvNews.setHasFixedSize(true)
             rcvNews.layoutManager = LinearLayoutManager(requireContext())
-            postAdapter = PostAdapter(postList, findNavController())
+            postAdapter = PostAdapter(postList, findNavController(), false)
             rcvNews.adapter = postAdapter
         }
     }

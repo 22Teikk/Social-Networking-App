@@ -57,6 +57,7 @@ class ProfileFragment : Fragment() {
     private lateinit var _binding: FragmentProfileBinding
     private lateinit var imageAvatar: ShapeableImageView
     private val binding get() = _binding
+
     private lateinit var auth: FirebaseAuth
     private val uid get() = auth.uid!!
     private lateinit var database: DatabaseReference

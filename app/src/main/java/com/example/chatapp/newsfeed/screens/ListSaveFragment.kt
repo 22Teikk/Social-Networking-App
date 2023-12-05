@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chatapp.Constant
@@ -27,6 +28,7 @@ class ListSaveFragment() : Fragment() {
     private lateinit var adapterPost: SummaryPostAdapter
     private var listSavePost: ArrayList<String> = arrayListOf()
     private var listCountImage: ArrayList<Int> = arrayListOf()
+    private var listPostID: ArrayList<String> = arrayListOf()
     private lateinit var database: DatabaseReference
     private lateinit var auth: FirebaseAuth
     override fun onCreateView(
@@ -45,7 +47,7 @@ class ListSaveFragment() : Fragment() {
             setHasFixedSize(true)
             layoutManager = GridLayoutManager(requireContext(), 3)
         }
-        adapterPost = SummaryPostAdapter(listSavePost, listCountImage)
+        adapterPost = SummaryPostAdapter(listSavePost, listCountImage, findNavController(), listPostID)
         rcvListSave.adapter = adapterPost
         return view
     }
@@ -78,6 +80,7 @@ class ListSaveFragment() : Fragment() {
                         for (id in listPostSaveID) {
                             if (post != null) {
                                 if (id == post.pid) {
+                                    listPostID.add(post.pid!!)
                                     listSavePost.add(post.listPhoto!![0])
                                     listCountImage.add(post.listPhoto!!.size)
                                     adapterPost.notifyDataSetChanged()

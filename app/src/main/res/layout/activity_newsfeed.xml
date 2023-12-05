@@ -73,6 +73,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/bottomNavigationNews"
+                app:labelVisibilityMode="selected"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_gravity="bottom"
                 app:menu="@menu/bottom_nav_newsfeed"/>

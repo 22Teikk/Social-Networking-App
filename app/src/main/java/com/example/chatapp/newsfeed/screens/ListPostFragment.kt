@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -30,6 +31,7 @@ class ListPostFragment() : Fragment() {
     private lateinit var adapterPost: SummaryPostAdapter
     private var listSummaryPost: ArrayList<String> = arrayListOf()
     private var listCountImage: ArrayList<Int> = arrayListOf()
+    private var listPostID: ArrayList<String> = arrayListOf()
     private lateinit var database: DatabaseReference
 
     lateinit var profileID: String
@@ -48,7 +50,7 @@ class ListPostFragment() : Fragment() {
             setHasFixedSize(true)
             layoutManager = GridLayoutManager(requireContext(), 3)
         }
-        adapterPost = SummaryPostAdapter(listSummaryPost, listCountImage)
+        adapterPost = SummaryPostAdapter(listSummaryPost, listCountImage, findNavController(), listPostID)
         rcvListPost.adapter = adapterPost
         return view
     }
@@ -60,6 +62,7 @@ class ListPostFragment() : Fragment() {
                         val post = data.getValue(Posts::class.java)
                         if (post?.publisher.equals(profileID)) {
                             if (post != null && post.listPhoto != null) {
+                                listPostID.add(post.pid!!)
                                 listSummaryPost.add(post.listPhoto!![0])
                                 listCountImage.add(post.listPhoto!!.size)
                                 adapterPost.notifyDataSetChanged()
