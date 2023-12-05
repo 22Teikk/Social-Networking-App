@@ -152,7 +152,9 @@ class PostAdapter(
         if (binding.likePost.tag.equals("Like")) {
             auth.uid?.let {
                 database.child(Constant.LIKE_TABLE_NAME).child(postId).child(it).setValue(true)
-                addNotification(userID, postId, "Like your post!")
+                if (auth.uid.toString() != userID) {
+                    addNotification(userID, postId, "Like your post!")
+                }
             }
         } else {
             auth.uid?.let {
