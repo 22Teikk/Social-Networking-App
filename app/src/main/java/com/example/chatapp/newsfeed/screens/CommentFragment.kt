@@ -124,7 +124,7 @@ class CommentFragment : Fragment() {
     private fun addNotification(content: String) {
         val notifications = Notifications(Firebase.auth.uid, content, args.postID)
         if (args.publisherID != Firebase.auth.uid)
-        database.child(Constant.NOTIFICATION_TABLE_NAME).child(args.publisherID).push().setValue(notifications)
+            database.child(Constant.NOTIFICATION_TABLE_NAME).child(args.publisherID).push().setValue(notifications)
     }
 
     override fun onStart() {

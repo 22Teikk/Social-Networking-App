@@ -26,8 +26,8 @@ import java.util.concurrent.SubmissionPublisher
 
 class PostAdapter(
     private val listPost: ArrayList<Posts>,
-    val navController: NavController,
-    val isProfile: Boolean
+    private val navController: NavController,
+    private val isProfile: Boolean
 ) :
     RecyclerView.Adapter<PostAdapter.PostViewHolder>() {
     private lateinit var database: DatabaseReference
@@ -107,8 +107,15 @@ class PostAdapter(
                     navController.navigate(action)
                 }
 
-                viewDetailPost.setOnClickListener {
-
+                //View User Like Your Post
+                countLikePost.setOnClickListener {
+                    if (isProfile) {
+                        val action = PostDetailFragmentDirections.actionPostDetailFragmentToFollowAndLikeFragment("Like", post.pid.toString())
+                        navController.navigate(action)
+                    } else {
+                        val action = FeedFragmentDirections.actionFeedFragmentToFollowAndLikeFragment("Like", post.pid.toString())
+                        navController.navigate(action)
+                    }
                 }
             }
         }

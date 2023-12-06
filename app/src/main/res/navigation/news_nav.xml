@@ -29,6 +29,11 @@
         <action
             android:id="@+id/action_feedFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_feedFragment_to_followAndLikeFragment"
+            app:destination="@id/followAndLikeFragment"
+            app:popUpTo="@id/feedFragment"
+            app:popUpToInclusive="false"/>
 
     </fragment>
     <fragment
@@ -54,7 +59,12 @@
         <action
             android:id="@+id/action_profileFragment_to_postDetailFragment"
             app:destination="@id/postDetailFragment"
-            app:popUpTo="@id/feedFragment"
+            app:popUpTo="@id/profileFragment"
+            app:popUpToInclusive="false"/>
+        <action
+            android:id="@+id/action_profileFragment_to_followAndLikeFragment2"
+            app:destination="@id/followAndLikeFragment"
+            app:popUpTo="@id/profileFragment"
             app:popUpToInclusive="false"/>
     </fragment>
     <fragment
@@ -115,7 +125,29 @@
         <action
             android:id="@+id/action_postDetailFragment_to_commentFragment"
             app:destination="@id/commentFragment"
-            app:popUpTo="@id/feedFragment"
+            app:popUpTo="@id/postDetailFragment"
+            app:popUpToInclusive="false"/>
+        <action
+            android:id="@+id/action_postDetailFragment_to_followAndLikeFragment"
+            app:destination="@id/followAndLikeFragment"
+            app:popUpTo="@id/postDetailFragment"
+            app:popUpToInclusive="false"/>
+    </fragment>
+    <fragment
+        android:id="@+id/followAndLikeFragment"
+        android:name="com.example.chatapp.newsfeed.screens.FollowAndLikeFragment"
+        android:label="fragment_follow_and_like"
+        tools:layout="@layout/fragment_follow_and_like" >
+        <argument
+            android:name="option"
+            app:argType="string" />
+        <argument
+            android:name="id"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_followAndLikeFragment_to_profileFragment"
+            app:destination="@id/profileFragment"
+            app:popUpTo="@id/followAndLikeFragment"
             app:popUpToInclusive="false"/>
     </fragment>
 </navigation>

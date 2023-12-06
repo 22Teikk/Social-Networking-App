@@ -92,6 +92,16 @@ class ProfileFragment : Fragment() {
         countPosts()
         countFollowers()
         countFollowing()
+        //View Follower
+        binding.viewFollower.setOnClickListener {
+            val action = ProfileFragmentDirections.actionProfileFragmentToFollowAndLikeFragment2("Followers", profileID)
+            findNavController().navigate(action)
+        }
+        //View Following
+        binding.viewFollowing.setOnClickListener {
+            val action = ProfileFragmentDirections.actionProfileFragmentToFollowAndLikeFragment2("Following", profileID)
+            findNavController().navigate(action)
+        }
         //Log Out
         binding.logOut.setOnClickListener {
             auth.signOut()

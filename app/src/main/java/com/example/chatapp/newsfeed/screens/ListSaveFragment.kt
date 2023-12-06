@@ -57,6 +57,7 @@ class ListSaveFragment() : Fragment() {
         database.child(Constant.SAVE_TABLE_NAME).child(auth.uid.toString())
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
+                    listPostSaveID.clear()
                     for (data in snapshot.children) {
                         listPostSaveID.add(data.key.toString())
                     }

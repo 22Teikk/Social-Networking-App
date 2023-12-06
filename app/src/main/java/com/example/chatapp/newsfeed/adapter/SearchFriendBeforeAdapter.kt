@@ -48,7 +48,8 @@ class SearchFriendBeforeAdapter (
             binding.apply {
                 Picasso.get().load(user.avatar).into(avatarFriendSearchItem)
                 friendNameSearchItem.setText(user.name)
-                friendGenderSearchItem.setText(user.gender)
+                if (user.bio == null || user.bio == "") friendBioSearchItem.setText(user.gender)
+                else friendBioSearchItem.setText(user.bio)
                 isFollowing(user.uid!!, followFriends)
                 followFriends.setOnClickListener {
                     if (followFriends.contentDescription == "Follow") {

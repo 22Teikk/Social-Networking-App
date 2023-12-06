@@ -59,6 +59,9 @@ class ListPostFragment() : Fragment() {
         database.child(Constant.POST_TABLE_NAME).addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     for (data in snapshot.children) {
+                        listPostID.clear()
+                        listSummaryPost.clear()
+                        listCountImage.clear()
                         val post = data.getValue(Posts::class.java)
                         if (post?.publisher.equals(profileID)) {
                             if (post != null && post.listPhoto != null) {
