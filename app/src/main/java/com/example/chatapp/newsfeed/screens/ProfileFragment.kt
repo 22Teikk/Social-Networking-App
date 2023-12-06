@@ -104,8 +104,8 @@ class ProfileFragment : Fragment() {
         }
         //Log Out
         binding.logOut.setOnClickListener {
-            auth.signOut()
-            startActivity(Intent(requireContext(), Main_Activity::class.java))
+            FirebaseAuth.getInstance().signOut()
+            startActivity(Intent(requireContext(), Main_Activity::class.java).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
         }
         //Change Information
         binding.changeInformation.setOnClickListener {
