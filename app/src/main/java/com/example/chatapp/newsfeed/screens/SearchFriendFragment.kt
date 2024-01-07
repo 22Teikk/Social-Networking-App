@@ -36,8 +36,6 @@ class SearchFriendFragment : Fragment() {
     ): View? {
         _binding = FragmentSearchFriendBinding.inflate(inflater, container, false)
 
-        hideActionBar()
-
         binding.apply {
             //For rcv search
             rcvFriendSearch.setHasFixedSize(true)
@@ -78,39 +76,9 @@ class SearchFriendFragment : Fragment() {
                     return true
                 }
             })
-            backToFeeds.setOnClickListener {
-                findNavController().navigateUp()
-            }
         }
 
         return binding.root
-    }
-
-    override fun onStart() {
-        hideActionBar()
-        super.onStart()
-    }
-
-    override fun onPause() {
-        val actionbar = activity?.findViewById<LinearLayout>(R.id.actionbarNews)
-        if (actionbar != null) {
-            actionbar.visibility = View.VISIBLE
-        }
-        val bottomNav = activity?.findViewById<BottomNavigationView>(R.id.bottomNavigationNews)
-        if (bottomNav != null) {
-            bottomNav.visibility = View.VISIBLE
-        }
-        super.onPause()
-    }
-    private fun hideActionBar() {
-        val actionbar = activity?.findViewById<LinearLayout>(R.id.actionbarNews)
-        if (actionbar != null) {
-            actionbar.visibility = View.GONE
-        }
-        val bottomNav = activity?.findViewById<BottomNavigationView>(R.id.bottomNavigationNews)
-        if (bottomNav != null) {
-            bottomNav.visibility = View.GONE
-        }
     }
 
     private fun queryFriendByName(queryName: String?) {

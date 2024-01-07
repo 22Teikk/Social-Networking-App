@@ -12,8 +12,11 @@ import com.example.chatapp.Constant
 import com.example.chatapp.R
 import com.example.chatapp.databinding.FragmentFeedBinding
 import com.example.chatapp.model.Posts
+import com.example.chatapp.model.Stories
+import com.example.chatapp.model.Users
 import com.example.chatapp.newsfeed.adapter.FollowingFriendsAdapter
 import com.example.chatapp.newsfeed.adapter.PostAdapter
+import com.example.chatapp.newsfeed.adapter.StoryAdapter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
@@ -22,15 +25,17 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.squareup.picasso.Picasso
 
 class FeedFragment : Fragment() {
     private lateinit var _binding: FragmentFeedBinding
     private val binding get() = _binding
     private lateinit var database: DatabaseReference
-    private lateinit var followingAdapter: FollowingFriendsAdapter
     private var followingList: ArrayList<String> = arrayListOf()
     private lateinit var postAdapter: PostAdapter
     private var postList: ArrayList<Posts> = arrayListOf()
+    private var storyList: ArrayList<Stories> = arrayListOf()
+    private lateinit var storyAdapter: StoryAdapter
     private lateinit var auth: FirebaseAuth
 
     override fun onCreateView(
@@ -42,13 +47,14 @@ class FeedFragment : Fragment() {
         auth = Firebase.auth
         database = Firebase.database.reference
 
-        initUIFollowingFriends()
+        checkFollowing()
+        initAddStoryImage()
+        initUIStories()
         initUIPost()
-
         refreshPost()
 
-        binding.imageAddFriends.setOnClickListener {
-            findNavController().navigate(R.id.searchFriendFragment)
+        binding.imageAddStory.setOnClickListener {
+            findNavController().navigate(R.id.action_feedFragment_to_storyNewsFragment)
         }
 
         return binding.root
@@ -61,14 +67,12 @@ class FeedFragment : Fragment() {
         }
     }
 
-    private fun initUIFollowingFriends() {
-        checkFollowing()
+    private fun initUIStories() {
         binding.apply {
-            rcvFriends.setHasFixedSize(true)
-            rcvFriends.layoutManager =
-                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            followingAdapter = FollowingFriendsAdapter(followingList, findNavController())
-            rcvFriends.adapter = followingAdapter
+            rcvStories.setHasFixedSize(true)
+            rcvStories.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            storyAdapter = StoryAdapter(storyList)
+            rcvStories.adapter = storyAdapter
         }
     }
 
@@ -90,12 +94,55 @@ class FeedFragment : Fragment() {
                     snapshot.children.forEach {
                         followingList.add(it.key!!)
                     }
-                    followingAdapter.notifyDataSetChanged()
                     getPosts()
+                    getStories()
                 }
 
                 override fun onCancelled(error: DatabaseError) {
                     Toast.makeText(requireContext(), error.message, Toast.LENGTH_SHORT).show()
+                }
+            })
+    }
+
+    private fun initAddStoryImage() {
+        database.child(Constant.USER_TABLE_NAME).addListenerForSingleValueEvent(object :
+            ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val user = snapshot.child(auth.uid.toString()).getValue(Users::class.java)
+                user?.let {
+                    Picasso.get().load(it.avatar).into(binding.addStoryImage)
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+        })
+    }
+
+    private fun getStories() {
+        database.child(Constant.STORY_TABLE_NAME)
+            .addListenerForSingleValueEvent(object : ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    storyList.clear()
+                    val timeCurrent = System.currentTimeMillis()
+                    for(id in followingList) {
+                        var countStories = 0
+                        var story: Stories ?= null
+                        for (data in snapshot.children) {
+                            story = data.getValue(Stories::class.java)
+                            if (story != null && story.uid == id) {
+                                if (timeCurrent > story.timeStart && timeCurrent < story.timeEnd)
+                                    countStories++
+                                else database.child(story.storyID.toString()).removeValue()
+                            }
+                        }
+                        if (countStories > 0) storyList.add(0, story!!)
+                    }
+                    storyAdapter.notifyDataSetChanged()
+                }
+
+                override fun onCancelled(error: DatabaseError) {
                 }
             })
     }
@@ -117,7 +164,8 @@ class FeedFragment : Fragment() {
                     }
                     if (postList.size == 0) {
                         binding.rcvNews.visibility = View.GONE
-                    } else binding.txtRecomend.visibility = View.GONE
+                        binding.txtRecommend.visibility = View.VISIBLE
+                    }
                     postAdapter.notifyDataSetChanged()
                 }
 

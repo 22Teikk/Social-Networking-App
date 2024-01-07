@@ -4,6 +4,9 @@
     <item android:title="Feeds"
         android:id="@+id/feedFragment"
         android:icon="@drawable/baseline_newspaper_24"/>
+    <item android:title="Search"
+        android:id="@+id/searchFriendFragment"
+        android:icon="@drawable/baseline_person_search_24"/>
     <item android:title="Notifications"
         android:id="@+id/notificationsFragment"
         android:icon="@drawable/baseline_notifications_24"/>

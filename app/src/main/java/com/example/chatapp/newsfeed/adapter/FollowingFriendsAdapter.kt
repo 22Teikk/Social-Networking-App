@@ -15,7 +15,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
 
-class FollowingFriendsAdapter(private val followingList: List<String>, val navController: NavController):
+class FollowingFriendsAdapter(private val followingList: List<String>, private val navController: NavController):
     RecyclerView.Adapter<FollowingFriendsAdapter.FollowingFriendsViewHolder>() {
     inner class FollowingFriendsViewHolder(val binding: FriendItemBinding) :
         RecyclerView.ViewHolder(binding.root)

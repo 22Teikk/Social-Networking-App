@@ -7,6 +7,7 @@ object Constant {
     //For Storage Images
     const val USER_IMAGE_PATH = "images"
     const val POST_IMAGE_PATH = "post_images"
+    const val STORY_IMAGE_PATH = "stories_images"
 
     //For Follow Table
     const val FOLLOW_TABLE_NAME = "Follow"
@@ -27,4 +28,7 @@ object Constant {
 
     //For Notification Table
     const val NOTIFICATION_TABLE_NAME = "Notification"
+
+    //For Story Table
+    const val STORY_TABLE_NAME = "Story"
 }

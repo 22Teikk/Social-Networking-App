@@ -6,46 +6,71 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".newsfeed.screens.FeedFragment">
 
-
-    <LinearLayout
-        android:id="@+id/imageAddFriends"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_width="wrap_content"
-        android:layout_marginHorizontal="@dimen/_8sdp"
-        android:orientation="vertical"
-        android:layout_height="@dimen/_80sdp">
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="match_parent"
+        android:id="@+id/layoutStories"
+        android:layout_height="wrap_content">
 
-    <com.google.android.material.imageview.ShapeableImageView
-        android:layout_width="@dimen/_40sdp"
-        android:layout_height="@dimen/_40sdp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/baseline_person_add_24"
-        android:tint="@color/com_facebook_blue"
-        app:shapeAppearanceOverlay="@style/Circular"
-        app:strokeWidth="@dimen/_1sdp"
-        app:strokeColor="@color/grey" />
-    <TextView
-        android:gravity="center_horizontal"
-        android:layout_width="@dimen/_40sdp"
-        android:layout_height="wrap_content"
-        android:text="Add\n Friends"
-        android:maxLines="2"
-        android:fontFamily="serif"
-        android:textAlignment="center"
-        android:textSize="@dimen/_10ssp"
-        android:textColor="@color/com_facebook_blue"/>
+        <LinearLayout
+            android:id="@+id/imageAddStory"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_marginHorizontal="@dimen/_8sdp"
+            android:orientation="vertical"
+            android:layout_height="@dimen/_80sdp">
 
-    </LinearLayout>
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="0dp"
-        android:layout_height="@dimen/_80sdp"
-        android:id="@+id/rcvFriends"
-        android:paddingHorizontal="@dimen/_8sdp"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:listitem="@layout/friend_item"
-        app:layout_constraintStart_toEndOf="@id/imageAddFriends"
-        app:layout_constraintEnd_toEndOf="parent"/>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:scaleType="centerCrop"
+                    android:id="@+id/addStoryImage"
+                    android:src="@drawable/baseline_person_add_24"
+                    app:shapeAppearanceOverlay="@style/Circular"
+                    app:strokeWidth="@dimen/_1sdp"
+                    app:strokeColor="@color/grey"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+                <ImageView
+                    android:layout_width="@dimen/_10sdp"
+                    android:layout_height="@dimen/_10sdp"
+                    android:src="@drawable/baseline_add_24"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:tintMode="add"
+                    android:contentDescription="TODO" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:gravity="center_horizontal"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="wrap_content"
+                android:text="Add\n Story"
+                android:maxLines="2"
+                android:fontFamily="serif"
+                android:textAlignment="center"
+                android:textSize="@dimen/_10ssp"
+                android:textColor="@color/com_facebook_blue"/>
+
+        </LinearLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_80sdp"
+            android:id="@+id/rcvStories"
+            android:paddingHorizontal="@dimen/_8sdp"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:listitem="@layout/friend_item"
+            app:layout_constraintStart_toEndOf="@id/imageAddStory"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/refreshPost"
@@ -53,7 +78,7 @@
         android:layout_height="0dp"
         android:layout_marginHorizontal="@dimen/_8sdp"
         tools:listitem="@layout/post_item"
-        app:layout_constraintTop_toBottomOf="@id/rcvFriends"
+        app:layout_constraintTop_toBottomOf="@id/layoutStories"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
@@ -69,7 +94,8 @@
 
 
     <TextView
-        android:id="@+id/txtRecomend"
+        android:visibility="gone"
+        android:id="@+id/txtRecommend"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:text="Add friends to be able to view news"
@@ -78,7 +104,7 @@
         android:textSize="@dimen/_20sdp"
         android:layout_marginHorizontal="@dimen/_8sdp"
         tools:listitem="@layout/post_item"
-        app:layout_constraintTop_toBottomOf="@id/rcvFriends"
+        app:layout_constraintTop_toBottomOf="@id/layoutStories"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
