@@ -6,4 +6,5 @@ data class Stories(
     var timeEnd: Long = 0,
     var storyID: String ?= null,
     var uid: String ?= null,
+    var viewer: List<String> ?= null
 )

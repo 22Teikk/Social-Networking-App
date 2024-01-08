@@ -63,6 +63,7 @@ class FeedFragment : Fragment() {
     private fun refreshPost() {
         binding.refreshPost.setOnRefreshListener {
             getPosts()
+            getStories()
             binding.refreshPost.isRefreshing = false
         }
     }
@@ -71,7 +72,7 @@ class FeedFragment : Fragment() {
         binding.apply {
             rcvStories.setHasFixedSize(true)
             rcvStories.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            storyAdapter = StoryAdapter(storyList)
+            storyAdapter = StoryAdapter(storyList, findNavController())
             rcvStories.adapter = storyAdapter
         }
     }
@@ -122,22 +123,23 @@ class FeedFragment : Fragment() {
 
     private fun getStories() {
         database.child(Constant.STORY_TABLE_NAME)
-            .addListenerForSingleValueEvent(object : ValueEventListener{
+            .addValueEventListener(object : ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
                     storyList.clear()
                     val timeCurrent = System.currentTimeMillis()
                     for(id in followingList) {
-                        var countStories = 0
                         var story: Stories ?= null
                         for (data in snapshot.children) {
                             story = data.getValue(Stories::class.java)
                             if (story != null && story.uid == id) {
-                                if (timeCurrent > story.timeStart && timeCurrent < story.timeEnd)
-                                    countStories++
+                                if (timeCurrent > story.timeStart && timeCurrent < story.timeEnd) {
+                                    if (story.uid == auth.uid)
+                                        storyList.add(0, story)
+                                    else storyList.add(story)
+                                }
                                 else database.child(story.storyID.toString()).removeValue()
                             }
                         }
-                        if (countStories > 0) storyList.add(0, story!!)
                     }
                     storyAdapter.notifyDataSetChanged()
                 }

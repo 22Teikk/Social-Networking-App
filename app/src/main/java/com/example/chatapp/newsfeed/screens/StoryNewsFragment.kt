@@ -163,17 +163,18 @@ override fun onStart() {
     super.onStart()
 }
 
-override fun onPause() {
-    val actionbar = activity?.findViewById<LinearLayout>(R.id.actionbarNews)
-    if (actionbar != null) {
-        actionbar.visibility = View.VISIBLE
+
+    override fun onPause() {
+        val actionbar = activity?.findViewById<LinearLayout>(R.id.actionbarNews)
+        if (actionbar != null) {
+            actionbar.visibility = View.VISIBLE
+        }
+        val bottomNav = activity?.findViewById<BottomNavigationView>(R.id.bottomNavigationNews)
+        if (bottomNav != null) {
+            bottomNav.visibility = View.VISIBLE
+        }
+        super.onPause()
     }
-    val bottomNav = activity?.findViewById<BottomNavigationView>(R.id.bottomNavigationNews)
-    if (bottomNav != null) {
-        bottomNav.visibility = View.VISIBLE
-    }
-    super.onPause()
-}
 
 private fun hideActionBar() {
     val actionbar = activity?.findViewById<LinearLayout>(R.id.actionbarNews)

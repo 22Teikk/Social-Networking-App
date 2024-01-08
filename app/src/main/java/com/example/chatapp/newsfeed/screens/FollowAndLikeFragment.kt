@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -63,6 +64,9 @@ class FollowAndLikeFragment : Fragment() {
                     userAdapter.option = "Following"
                     getFollowing()
                 }
+                "Viewer" -> {
+                    getViewer()
+                }
             }
             btnBack.setOnClickListener {
                 findNavController().navigateUp()
@@ -78,7 +82,8 @@ class FollowAndLikeFragment : Fragment() {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     listID.clear()
                     for (data in snapshot.children) {
-                        listID.add(data.key.toString())
+                        if (data.key.toString() != auth.uid.toString())
+                            listID.add(data.key.toString())
                     }
                     getUser()
                 }
@@ -114,6 +119,25 @@ class FollowAndLikeFragment : Fragment() {
                     for (data in snapshot.children) {
                         listID.add(data.key.toString())
                     }
+                    getUser()
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+
+                }
+            })
+    }
+
+    private fun getViewer() {
+        database.child(Constant.STORY_TABLE_NAME).child(args.id).child("viewer")
+            .addListenerForSingleValueEvent(object : ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    listID.clear()
+                    for (data in snapshot.children) {
+                        if (data.value != auth.uid)
+                            listID.add(data.value.toString())
+                    }
+                    Log.d("asldf", listID.get(0))
                     getUser()
                 }
 

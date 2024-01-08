@@ -33,6 +33,11 @@
             app:destination="@id/storyNewsFragment"
             app:popUpTo="@id/feedFragment"
             app:popUpToInclusive="false"/>
+        <action
+            android:id="@+id/action_feedFragment_to_viewStoryFragment"
+            app:destination="@id/viewStoryFragment"
+            app:popUpTo="@id/feedFragment"
+            app:popUpToInclusive="false"/>
 
     </fragment>
     <fragment
@@ -149,4 +154,20 @@
         android:name="com.example.chatapp.newsfeed.screens.StoryNewsFragment"
         android:label="fragment_story_news"
         tools:layout="@layout/fragment_story_news" />
+    <fragment
+        android:id="@+id/viewStoryFragment"
+        android:name="com.example.chatapp.newsfeed.screens.ViewStoryFragment"
+        android:label="fragment_view_story"
+        tools:layout="@layout/fragment_view_story" >
+        <argument
+            android:name="storyID"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_viewStoryFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_viewStoryFragment_to_followAndLikeFragment"
+            app:destination="@id/followAndLikeFragment" />
+        <argument android:name="userID" />
+    </fragment>
 </navigation>
