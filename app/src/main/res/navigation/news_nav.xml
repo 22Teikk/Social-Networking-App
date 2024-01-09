@@ -148,6 +148,10 @@
             app:destination="@id/profileFragment"
             app:popUpTo="@id/followAndLikeFragment"
             app:popUpToInclusive="false"/>
+        <argument
+            android:name="uid"
+            app:argType="string"
+            android:defaultValue='""' />
     </fragment>
     <fragment
         android:id="@+id/storyNewsFragment"
@@ -159,15 +163,13 @@
         android:name="com.example.chatapp.newsfeed.screens.ViewStoryFragment"
         android:label="fragment_view_story"
         tools:layout="@layout/fragment_view_story" >
-        <argument
-            android:name="storyID"
-            app:argType="string" />
         <action
             android:id="@+id/action_viewStoryFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
         <action
             android:id="@+id/action_viewStoryFragment_to_followAndLikeFragment"
             app:destination="@id/followAndLikeFragment" />
-        <argument android:name="userID" />
+        <argument android:name="userID"
+            app:argType="string" />
     </fragment>
 </navigation>

@@ -8,6 +8,7 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Adapter
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -18,6 +19,8 @@ import com.example.chatapp.R
 import com.example.chatapp.databinding.FragmentViewStoryBinding
 import com.example.chatapp.model.Stories
 import com.example.chatapp.model.Users
+import com.example.chatapp.newsfeed.adapter.ImageStoryAdapter
+import com.example.chatapp.onboarding.ViewPager_Adapter
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -28,6 +31,9 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
+import java.util.ArrayList
+import java.util.Timer
+import java.util.TimerTask
 
 class ViewStoryFragment : Fragment() {
     private lateinit var _binding: FragmentViewStoryBinding
@@ -36,8 +42,8 @@ class ViewStoryFragment : Fragment() {
     private lateinit var database: DatabaseReference
     private lateinit var auth: FirebaseAuth
     private var isProgressBarRunning = false
-    private var story: Stories ?= null
-    private var user: Users ?= null
+    private var listStory: ArrayList<Stories> = arrayListOf()
+    private var adapter: ImageStoryAdapter ?= null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,43 +54,39 @@ class ViewStoryFragment : Fragment() {
         database = Firebase.database.reference
         auth = Firebase.auth
         binding.apply {
+            tabStory.setupWithViewPager(viewPagerImageStory)
             getUser(this)
             getStory(this)
-            if (args.userID == auth.uid) {
-                getCountViewStory(this)
-                delStory.setOnClickListener {
-                    database.child(Constant.STORY_TABLE_NAME).child(args.storyID).removeValue()
-                    Toast.makeText(requireContext(), "Delete Success", Toast.LENGTH_SHORT).show()
-                    findNavController().navigateUp()
-                }
-            }
+            autoImageSlide(this)
             exitStory.setOnClickListener {
-                stopProgressBar()
                 findNavController().navigateUp()
             }
             userLayout.setOnClickListener {
                 val action = ViewStoryFragmentDirections.actionViewStoryFragmentToProfileFragment(args.userID)
                 findNavController().navigate(action)
             }
-            previousStory.setOnClickListener {
-
-            }
-            nextStory.setOnClickListener {
-//                findNavController().navigateUp()
-//                findNavController().navigate(R.id.action_viewStoryFragment_to_likeStoryFragment)
-            }
-            showViewer.setOnClickListener {
-                stopProgressBar()
-                val action = story?.storyID?.let { it1 ->
-                    ViewStoryFragmentDirections.actionViewStoryFragmentToFollowAndLikeFragment("Viewer",
-                        it1
-                    )
-                }
-                action?.let { it1 -> findNavController().navigate(it1) }
-            }
         }
 
         return binding.root
+    }
+
+    private fun autoImageSlide(binding: FragmentViewStoryBinding) {
+        val handler = Handler()
+        val runable = object : Runnable {
+            override fun run() {
+                if (binding.viewPagerImageStory.currentItem == listStory.size - 1)
+                    binding.viewPagerImageStory.currentItem = 0
+                else{
+                    binding.viewPagerImageStory.setCurrentItem(binding.viewPagerImageStory.currentItem + 1, true)
+                }
+            }
+        }
+        val timer = Timer()
+        timer.schedule(object : TimerTask() {
+            override fun run() {
+                handler.post(runable)
+            }
+        }, 5000, 5000)
     }
 
     private fun getUser(binding: FragmentViewStoryBinding) {
@@ -105,73 +107,30 @@ class ViewStoryFragment : Fragment() {
             })
     }
 
-    private fun getCountViewStory(binding: FragmentViewStoryBinding) {
-        binding.countViewLayout.visibility = View.VISIBLE
-        database.child(Constant.STORY_TABLE_NAME).child(args.storyID).child("viewer")
-            .addValueEventListener(object : ValueEventListener{
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val count = snapshot.childrenCount.toInt()
-                    if (count > 1)
-                        binding.countView.text =  "${count - 1} people view your story"
-                    else binding.countView.text = "None view your story"
-                }
 
-                override fun onCancelled(error: DatabaseError) {
-                }
-            })
-    }
 
     private fun getStory(binding: FragmentViewStoryBinding) {
-        database.child(Constant.STORY_TABLE_NAME)
-            .addListenerForSingleValueEvent(object : ValueEventListener{
+        database.child(Constant.STORY_TABLE_NAME).child(args.userID)
+            .addValueEventListener(object : ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
+                    listStory.clear()
                     for (data in snapshot.children) {
-                        story = data.getValue(Stories::class.java)
-                        if (story!!.storyID == args.storyID) {
-                            Picasso.get().load(story!!.imageURL).into(binding.imageStory)
+                        val story = data.getValue(Stories::class.java)
+                        if (story != null) {
+                            listStory.add(story)
                         }
                     }
+                    adapter = ImageStoryAdapter(requireContext().applicationContext, listStory, findNavController())
+                    binding.viewPagerImageStory.adapter = adapter
+                    adapter?.notifyDataSetChanged()
                 }
 
                 override fun onCancelled(error: DatabaseError) {
                 }
             })
-        startProgressBarAnimation()
-
-        // Delay for 5 seconds and then remove the fragment
-        Handler(Looper.getMainLooper()).postDelayed({
-            if (isProgressBarRunning) {
-                stopProgressBar()
-                findNavController().navigateUp()
-            }
-        }, 5000)
     }
 
-    private fun startProgressBarAnimation() {
-        val progressMax = 100
-        val progressIncrement = 1
-        val delayMillis = 50 // Set the delay between each increment
-        isProgressBarRunning = true
-        Thread {
-            var progress = 0
-            while (progress <= progressMax && isProgressBarRunning) {
-                activity?.runOnUiThread {
-                    binding.pgbStory.progress = progress
-                }
-                try {
-                    Thread.sleep(delayMillis.toLong())
-                } catch (e: InterruptedException) {
-                    e.printStackTrace()
-                }
-                progress += progressIncrement
-            }
-            isProgressBarRunning = false
-        }.start()
-    }
 
-    private fun stopProgressBar() {
-        isProgressBarRunning = false
-    }
 
     override fun onStart() {
         hideActionBar()

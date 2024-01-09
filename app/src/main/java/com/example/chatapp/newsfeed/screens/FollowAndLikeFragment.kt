@@ -129,7 +129,7 @@ class FollowAndLikeFragment : Fragment() {
     }
 
     private fun getViewer() {
-        database.child(Constant.STORY_TABLE_NAME).child(args.id).child("viewer")
+        database.child(Constant.STORY_TABLE_NAME).child(args.uid).child(args.id).child("viewer")
             .addListenerForSingleValueEvent(object : ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
                     listID.clear()
@@ -137,7 +137,6 @@ class FollowAndLikeFragment : Fragment() {
                         if (data.value != auth.uid)
                             listID.add(data.value.toString())
                     }
-                    Log.d("asldf", listID.get(0))
                     getUser()
                 }
 

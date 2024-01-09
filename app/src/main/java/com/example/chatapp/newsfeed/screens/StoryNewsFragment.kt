@@ -101,7 +101,6 @@ class StoryNewsFragment : Fragment() {
         progressDialog.setTitle("Publishing...")
         progressDialog.setMessage("Please wait...")
         progressDialog.setCancelable(false)
-        val postID = database.child(Constant.POST_TABLE_NAME).push().key
         val imageTasks = mutableListOf<Task<Uri>>() // Danh sách các tác vụ lưu trữ ảnh
         if (uriImage != null) {
             val imageRef = storageReference.child(System.currentTimeMillis().toString() + ".jpg")
@@ -130,31 +129,16 @@ class StoryNewsFragment : Fragment() {
                 auth.uid
             )
             progressDialog.show()
-            database.child(Constant.STORY_TABLE_NAME).child(storyID)
-                .addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        if (!snapshot.exists()) {
-                            database.child(Constant.STORY_TABLE_NAME).child(storyID)
-                                .setValue(newStory).addOnSuccessListener {
-                                    progressDialog.dismiss()
-                                    Toast.makeText(
-                                        requireContext(),
-                                        "Publish successful!",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                    findNavController().navigate(R.id.feedFragment)
-                                }
-                        }
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {
-                        Toast.makeText(
-                            requireContext(),
-                            "Please choose the Image!",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                })
+            database.child(Constant.STORY_TABLE_NAME).child(auth.uid!!).child(storyID)
+                .setValue(newStory).addOnSuccessListener {
+                    progressDialog.dismiss()
+                    Toast.makeText(
+                        requireContext(),
+                        "Publish successful!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    findNavController().navigate(R.id.feedFragment)
+                }
         }
     }
 

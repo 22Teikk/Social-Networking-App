@@ -1,6 +1,7 @@
 package com.example.chatapp.newsfeed.screens
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +15,6 @@ import com.example.chatapp.databinding.FragmentFeedBinding
 import com.example.chatapp.model.Posts
 import com.example.chatapp.model.Stories
 import com.example.chatapp.model.Users
-import com.example.chatapp.newsfeed.adapter.FollowingFriendsAdapter
 import com.example.chatapp.newsfeed.adapter.PostAdapter
 import com.example.chatapp.newsfeed.adapter.StoryAdapter
 import com.google.firebase.auth.FirebaseAuth
@@ -34,7 +34,7 @@ class FeedFragment : Fragment() {
     private var followingList: ArrayList<String> = arrayListOf()
     private lateinit var postAdapter: PostAdapter
     private var postList: ArrayList<Posts> = arrayListOf()
-    private var storyList: ArrayList<Stories> = arrayListOf()
+    private var listStoryUID: ArrayList<String> = arrayListOf()
     private lateinit var storyAdapter: StoryAdapter
     private lateinit var auth: FirebaseAuth
 
@@ -71,8 +71,9 @@ class FeedFragment : Fragment() {
     private fun initUIStories() {
         binding.apply {
             rcvStories.setHasFixedSize(true)
-            rcvStories.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            storyAdapter = StoryAdapter(storyList, findNavController())
+            rcvStories.layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            storyAdapter = StoryAdapter(listStoryUID, findNavController())
             rcvStories.adapter = storyAdapter
         }
     }
@@ -122,31 +123,49 @@ class FeedFragment : Fragment() {
     }
 
     private fun getStories() {
-        database.child(Constant.STORY_TABLE_NAME)
-            .addValueEventListener(object : ValueEventListener{
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    storyList.clear()
-                    val timeCurrent = System.currentTimeMillis()
-                    for(id in followingList) {
-                        var story: Stories ?= null
+        for (id in followingList) {
+            database.child(Constant.STORY_TABLE_NAME).child(id)
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        listStoryUID.clear()
+                        val timeCurrent = System.currentTimeMillis()
                         for (data in snapshot.children) {
-                            story = data.getValue(Stories::class.java)
-                            if (story != null && story.uid == id) {
-                                if (timeCurrent > story.timeStart && timeCurrent < story.timeEnd) {
-                                    if (story.uid == auth.uid)
-                                        storyList.add(0, story)
-                                    else storyList.add(story)
+                            val story = data.getValue(Stories::class.java)
+                            if (timeCurrent > story!!.timeStart && timeCurrent < story.timeEnd) {
+                                if (!listStoryUID.contains(id)) {
+                                    listStoryUID.add(id)
                                 }
-                                else database.child(story.storyID.toString()).removeValue()
-                            }
+                            } else database.child(story!!.storyID.toString()).removeValue()
                         }
                     }
-                    storyAdapter.notifyDataSetChanged()
-                }
 
-                override fun onCancelled(error: DatabaseError) {
-                }
-            })
+                    override fun onCancelled(error: DatabaseError) {
+
+                    }
+                })
+
+            database.child(Constant.STORY_TABLE_NAME).child(auth.uid!!)
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val timeCurrent = System.currentTimeMillis()
+                        for (data in snapshot.children) {
+                            val story = data.getValue(Stories::class.java)
+                            if (timeCurrent > story!!.timeStart && timeCurrent < story.timeEnd) {
+                                if (!listStoryUID.contains(auth.uid)) {
+                                    listStoryUID.add(0, auth.uid!!)
+                                }
+                            } else database.child(story!!.storyID.toString()).removeValue()
+                        }
+//                        listStoryUID = storyUIDSets.toList() as ArrayList<String>
+                        storyAdapter.notifyDataSetChanged()
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+
+                    }
+                })
+
+        }
     }
 
     private fun getPosts() {
