@@ -96,7 +96,7 @@ class SearchFriendAdapter(
                     followFriends.visibility = View.GONE
                 }
                 viewFriend.setOnClickListener {
-//                    userListBefore.add(user)
+                    userListBefore.add(user)
                     when (option) {
                         "Like", "Followers", "Following" -> {
                             val action = FollowAndLikeFragmentDirections.actionFollowAndLikeFragmentToProfileFragment(user.uid!!)
