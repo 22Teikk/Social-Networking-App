@@ -54,17 +54,21 @@ class StoryAdapter(
                 }
 
             })
+        friendItemBinding.avatarProfile.strokeColor = ColorStateList.valueOf(Color.GRAY)
         Firebase.database.reference.child(Constant.STORY_TABLE_NAME).child(userID)
-            .addValueEventListener(object : ValueEventListener{
+            .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     for (data in snapshot.children) {
                         val story = data.getValue(Stories::class.java)
                         story?.let {
-                            if (story.viewer != null && story.viewer!!.contains(Firebase.auth.uid) ) {
+                            if (story.viewer == null || story.viewer?.contains(Firebase.auth.uid) == false) {
                                 friendItemBinding.avatarProfile.strokeColor =
-                                    ColorStateList.valueOf(Color.GRAY)
-                            }else friendItemBinding.avatarProfile.strokeColor =
-                                ColorStateList.valueOf(Color.RED)
+                                    ColorStateList.valueOf(Color.RED)
+                            }
+                            if (story.uid == Firebase.auth.uid) {
+                                friendItemBinding.avatarProfile.strokeColor =
+                                    ColorStateList.valueOf(Color.BLACK)
+                            }
                         }
                     }
                 }

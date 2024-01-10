@@ -110,7 +110,7 @@ class ViewStoryFragment : Fragment() {
                         val story = data.getValue(Stories::class.java)
                         if (story != null) {
                             if (story.viewer == null) {
-                                listStory.add(story)
+                                listStory.add(0, story)
                             }else {
                                 if (story.viewer!!.contains(auth.uid)) listStory.add(story)
                                 else listStory.add(0, story)
