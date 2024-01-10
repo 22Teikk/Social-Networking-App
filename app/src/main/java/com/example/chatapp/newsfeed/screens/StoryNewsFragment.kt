@@ -51,14 +51,15 @@ class StoryNewsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        hideActionBar()
         _binding = FragmentStoryNewsBinding.inflate(layoutInflater, container, false)
+        hideActionBar()
         pickImage.launch("image/*")
         auth = com.google.firebase.ktx.Firebase.auth
         database = com.google.firebase.ktx.Firebase.database.reference
         storageReference = FirebaseStorage.getInstance().getReference(Constant.STORY_IMAGE_PATH)
         binding.apply {
             btnBack.setOnClickListener {
+                showActionBar()
                 findNavController().navigateUp()
             }
 
@@ -137,18 +138,19 @@ class StoryNewsFragment : Fragment() {
                         "Publish successful!",
                         Toast.LENGTH_SHORT
                     ).show()
+                    showActionBar()
                     findNavController().navigate(R.id.feedFragment)
                 }
         }
     }
 
 override fun onStart() {
-    hideActionBar()
     super.onStart()
+    hideActionBar()
 }
 
 
-    override fun onPause() {
+     fun showActionBar() {
         val actionbar = activity?.findViewById<LinearLayout>(R.id.actionbarNews)
         if (actionbar != null) {
             actionbar.visibility = View.VISIBLE

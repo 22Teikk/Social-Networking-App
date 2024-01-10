@@ -1,16 +1,12 @@
 package com.example.chatapp.newsfeed.screens
 
-import android.content.res.ColorStateList
-import android.graphics.Color
+import ImageStoryAdapter
 import android.os.Bundle
 import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Adapter
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -19,8 +15,6 @@ import com.example.chatapp.R
 import com.example.chatapp.databinding.FragmentViewStoryBinding
 import com.example.chatapp.model.Stories
 import com.example.chatapp.model.Users
-import com.example.chatapp.newsfeed.adapter.ImageStoryAdapter
-import com.example.chatapp.onboarding.ViewPager_Adapter
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -31,7 +25,6 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
-import java.util.ArrayList
 import java.util.Timer
 import java.util.TimerTask
 
@@ -41,7 +34,6 @@ class ViewStoryFragment : Fragment() {
     private val args: ViewStoryFragmentArgs by navArgs()
     private lateinit var database: DatabaseReference
     private lateinit var auth: FirebaseAuth
-    private var isProgressBarRunning = false
     private var listStory: ArrayList<Stories> = arrayListOf()
     private var adapter: ImageStoryAdapter ?= null
 
