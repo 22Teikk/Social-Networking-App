@@ -103,13 +103,18 @@ class ViewStoryFragment : Fragment() {
 
     private fun getStory(binding: FragmentViewStoryBinding) {
         database.child(Constant.STORY_TABLE_NAME).child(args.userID)
-            .addValueEventListener(object : ValueEventListener{
+            .addListenerForSingleValueEvent(object : ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
                     listStory.clear()
                     for (data in snapshot.children) {
                         val story = data.getValue(Stories::class.java)
                         if (story != null) {
-                            listStory.add(story)
+                            if (story.viewer == null) {
+                                listStory.add(story)
+                            }else {
+                                if (story.viewer!!.contains(auth.uid)) listStory.add(story)
+                                else listStory.add(0, story)
+                            }
                         }
                     }
                     adapter = ImageStoryAdapter(requireContext().applicationContext, listStory, findNavController())

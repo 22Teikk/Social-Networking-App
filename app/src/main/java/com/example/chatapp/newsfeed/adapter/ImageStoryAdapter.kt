@@ -1,4 +1,6 @@
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,7 +9,6 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.PagerAdapter
 import com.example.chatapp.Constant
-import com.example.chatapp.databinding.FragmentViewStoryBinding
 import com.example.chatapp.databinding.ImageStoryItemBinding
 import com.example.chatapp.model.Stories
 import com.example.chatapp.newsfeed.screens.ViewStoryFragmentDirections
@@ -28,6 +29,7 @@ class ImageStoryAdapter(
 ) : PagerAdapter() {
 
     private var autoSlideTimer: Timer? = null
+    private var currentViewPagerPosition = 0
 
     override fun getCount(): Int {
         return storyList.size
@@ -37,7 +39,7 @@ class ImageStoryAdapter(
         val inflater = LayoutInflater.from(context)
         val binding = ImageStoryItemBinding.inflate(inflater, container, false)
         val view = binding.root
-
+        viewStory(storyList[0])
         if (storyList[position].uid == Firebase.auth.uid) {
             getCountViewStory(
                 binding, storyList[position].storyID.toString(),
@@ -102,5 +104,27 @@ class ImageStoryAdapter(
 
     override fun isViewFromObject(view: View, `object`: Any): Boolean {
         return view == `object`
+    }
+
+    override fun getItemPosition(`object`: Any): Int {
+        return POSITION_NONE
+    }
+
+    override fun setPrimaryItem(container: ViewGroup, position: Int, `object`: Any) {
+        super.setPrimaryItem(container, position, `object`)
+        if (currentViewPagerPosition != position) {
+            currentViewPagerPosition = position
+            viewStory(storyList[currentViewPagerPosition])
+        }
+    }
+
+    private fun viewStory(story: Stories) {
+        var newStory = story
+        newStory.viewer = story.viewer ?: mutableListOf()
+        val setViewer: MutableSet<String> = mutableSetOf()
+        if (story.viewer!=null) setViewer.addAll(story.viewer!!)
+        setViewer.add(Firebase.auth.uid.toString())
+        newStory.viewer = setViewer.toList()
+        Firebase.database.reference.child(Constant.STORY_TABLE_NAME).child(story.uid.toString()).child(story.storyID.toString()).setValue(newStory)
     }
 }

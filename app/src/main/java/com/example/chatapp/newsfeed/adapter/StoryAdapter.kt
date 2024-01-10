@@ -81,25 +81,16 @@ class StoryAdapter(
                 getInfo(this, userID)
 
                 friendLayout.setOnClickListener {
-                    setViewStory(userID, this)
+                    setViewStory(userID)
                 }
             }
         }
     }
 
-    private fun setViewStory(userID: String, friendItemBinding: FriendItemBinding) {
+    private fun setViewStory(userID: String) {
         val action = FeedFragmentDirections.actionFeedFragmentToViewStoryFragment(userID)
         navController.navigate(action)
     }
 }
 
-private fun viewStory(story: Stories) {
-    var newStory = story
-    newStory.viewer = story.viewer ?: mutableListOf()
-    val setViewer: MutableSet<String> = mutableSetOf()
-    if (story.viewer!=null) setViewer.addAll(story.viewer!!)
-    setViewer.add(Firebase.auth.uid.toString())
-    newStory.viewer = setViewer.toList()
-    Firebase.database.reference.child(Constant.STORY_TABLE_NAME).child(story.storyID.toString()).setValue(newStory)
 
-}

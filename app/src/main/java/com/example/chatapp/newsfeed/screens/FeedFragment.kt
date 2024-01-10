@@ -137,26 +137,26 @@ class FeedFragment : Fragment() {
                                 }
                             } else database.child(story!!.storyID.toString()).removeValue()
                         }
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {
-
-                    }
-                })
-
-            database.child(Constant.STORY_TABLE_NAME).child(auth.uid!!)
-                .addValueEventListener(object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        val timeCurrent = System.currentTimeMillis()
-                        for (data in snapshot.children) {
-                            val story = data.getValue(Stories::class.java)
-                            if (timeCurrent > story!!.timeStart && timeCurrent < story.timeEnd) {
-                                if (!listStoryUID.contains(auth.uid)) {
-                                    listStoryUID.add(0, auth.uid!!)
-                                }
-                            } else database.child(story!!.storyID.toString()).removeValue()
-                        }
+                        database.child(Constant.STORY_TABLE_NAME).child(auth.uid!!)
+                            .addValueEventListener(object : ValueEventListener {
+                                override fun onDataChange(snapshot: DataSnapshot) {
+                                    val timeCurrent = System.currentTimeMillis()
+                                    for (data in snapshot.children) {
+                                        val story = data.getValue(Stories::class.java)
+                                        if (timeCurrent > story!!.timeStart && timeCurrent < story.timeEnd) {
+                                            if (!listStoryUID.contains(auth.uid)) {
+                                                listStoryUID.add(0, auth.uid!!)
+                                            }
+                                        } else database.child(story!!.storyID.toString()).removeValue()
+                                    }
 //                        listStoryUID = storyUIDSets.toList() as ArrayList<String>
+                                    storyAdapter.notifyDataSetChanged()
+                                }
+
+                                override fun onCancelled(error: DatabaseError) {
+
+                                }
+                            })
                         storyAdapter.notifyDataSetChanged()
                     }
 
@@ -164,6 +164,8 @@ class FeedFragment : Fragment() {
 
                     }
                 })
+
+
 
         }
     }
